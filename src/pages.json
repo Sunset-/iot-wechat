@@ -1,0 +1,70 @@
+{
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [
+		{
+			"path": "pages/home/index",
+			"style": {
+				"navigationBarTitleText": "乾清·百悦",
+				"navigationBarBackgroundColor" : "#0d3a63"
+			}
+		},
+		//product
+		{
+			"path": "pages/product/index",
+			"style": {
+				"navigationBarTitleText": "列表",
+				"navigationBarBackgroundColor" : "#0d3a63",
+				"enablePullDownRefresh" : true
+			}
+		},
+		{
+			"path": "pages/product/detail",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"navigationBarBackgroundColor" : "#0d3a63"
+			}
+		},
+		{
+			"path": "pages/product/map",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"navigationBarBackgroundColor" : "#0d3a63"
+			}
+		}	
+	],
+	"globalStyle": {
+		"navigationStyle": "custom",
+		"pageOrientation": "portrait",
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "Hello uniapp",
+		"navigationBarBackgroundColor": "#007AFF",
+		"backgroundColor": "#F8F8F8",
+		"backgroundColorTop": "#F4F5F6",
+		"backgroundColorBottom": "#F4F5F6",
+		"mp-360": {
+			"navigationStyle": "custom"
+		}
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#515151",
+		"borderStyle": "black",
+		"backgroundColor": "#F8F8F8",
+		"list": [
+			{
+				"pagePath": "pages/home/index",
+				"iconPath": "static/taber_pictrue/home.png",
+				"selectedIconPath": "static/taber_pictrue/home_selected.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/product/index",
+				"iconPath": "static/taber_pictrue/fl.png",
+				"selectedIconPath": "static/taber_pictrue/fl_selected.png",
+				"text": "诉讼"
+			}
+		]
+	}
+}
