@@ -10,7 +10,7 @@ function http(opts) {
 			})
 			.then(([err, res]) => {
                 uni.hideLoading();
-				if (res && res.data && res.data.code == 200) {
+				if (res && res.data && (res.data.code == 200||res.data.code == 0)) {
 					return resolve(res.data.data);
 				}
 				console.error("请求异常：", res, err);

@@ -2,12 +2,9 @@ import $http from "@/common/http.js";
 
 export default {
 	list(filter) {
-		return Promise.resolve({
-			list : [{},{}],
-			count : 2
-		})
 		return $http({
-			url: `/api/product/query`,
+			url: `/api/m/device/info/query?noSign`,
+			type : "POST",
 			data: filter,
 		});
 	},

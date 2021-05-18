@@ -2,7 +2,12 @@
     <view class="product-container">
         <view class="page_header uni-panel search-header">
             <u-search placeholder="关键字/拼音" v-model="keyword" @change="inputChange"></u-search>
-            <u-tabs :list="tabs" active-color="#0d3a63" :is-scroll="false" :current="currentState" @change="tabsChange"></u-tabs>
+            <view class="top-status-tip">
+                <view>全部 <text>100</text></view>
+                <view>正常 <text>100</text></view>
+                <view>告警 <text>100</text></view>
+                <view>掉线 <text>100</text></view>
+            </view>
         </view>
         <view class="uni-list product-list-wrap">
             <block v-for="(value, index) in listData" :key="index">
@@ -83,17 +88,17 @@ export default {
             this.status = "loading";
             Store.list({
                 keyword: this.keyword,
-                states:{
-                    '0' : '',
-                    '1' : '0',
-                    '2' : '1',
-                    '3' : "2,3,4"
+                states: {
+                    0: "",
+                    1: "0",
+                    2: "1",
+                    3: "2,3,4",
                 }[this.currentState],
                 pageSize: 10,
-                pageNumber: Math.floor(this.listData.length / 10),
+                pageIndex: Math.floor(this.listData.length / 10) + 1,
             })
                 .then((res) => {
-                    console.log("请求接口结果：", res.data);
+                    console.log("请求接口结果：", res.list);
                     this.listData = this.listData.concat(res.list);
                     this.status =
                         res.count == this.listData.length ? "noMore" : "more";
@@ -121,12 +126,18 @@ export default {
         z-index: 10;
         background: #fff;
         border-bottom: 1px solid #ededed;
-        &>.u-search{
-            padding: 5px 5px 0px 5px;
+        & > .u-search {
+            padding: 5px 5px 5px 5px;
+        }
+        .top-status-tip {
+            height: 60upx;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
         }
     }
     .product-list-wrap {
-        padding-top: 145upx;
+        padding-top: 150upx;
     }
 }
 </style>

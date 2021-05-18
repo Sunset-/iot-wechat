@@ -1,4 +1,5 @@
 function formatTime(time) {
+	debugger;
 	if (typeof time !== 'number' || time < 0) {
 		return time
 	}

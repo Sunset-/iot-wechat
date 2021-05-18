@@ -6,7 +6,7 @@
 		{
 			"path": "pages/home/index",
 			"style": {
-				"navigationBarTitleText": "乾清·百悦",
+				"navigationBarTitleText": "物联网管理",
 				"navigationBarBackgroundColor" : "#0d3a63"
 			}
 		},
@@ -63,7 +63,7 @@
 				"pagePath": "pages/product/index",
 				"iconPath": "static/taber_pictrue/fl.png",
 				"selectedIconPath": "static/taber_pictrue/fl_selected.png",
-				"text": "诉讼"
+				"text": "详情"
 			}
 		]
 	}

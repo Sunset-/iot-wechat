@@ -1,72 +1,81 @@
 <template>
     <view :class='["my-unit",overtime?"overtime color-999":""]'>
-        <view :class="['unit-head product_code_label',color(data)]">
-            <text>{{data.name}}</text><text class="fr">代码：{{data.code}}</text>
+        <view :class="['unit-head product_code_label']">
+            <view class="uni-title">
+                <view>{{data.deviceName}}</view>
+                <view class="mini-sn">sn：{{data.deviceSN}}</view>
+            </view>
+            <view class="uni-operate">
+                <view v-html="statusDom"></view>
+                <text class="sunseticon sunseticon-location" :color="'#8f8f94'" @click="showMap()"></text>
+            </view>
         </view>
         <view :class="['unit-body']">
-            <text v-for="(item,index) in unitModel1" :key="index" :class="item.class">
-                {{item.label}}：<text :class="item.class">{{(item.name?data[item.name]:item.format(data))||''}}</text>
-            </text>
+            <view v-for="(item,index) in channels" :key="index" class="device-channel">
+                {{item.no}}：{{item.label}}&nbsp;&nbsp;{{item.value}}{{item.unit}}
+                <text class="sunseticon sunseticon-chart" :color="'#8f8f94'" @click="showDetail()"></text>
+                <text class="sunseticon sunseticon-warning" :color="'#8f8f94'"></text>
+            </view>
+            <view class="color-999" style="width:100%;padding:2upx 10upx;">
+                <view class="fl">{{data.groupName}}</view>
+                <view class="fr">{{formatTime(data.addTime)}}</view>
+            </view>
         </view>
-        <view class="unit-foot">
-            <text class="color-999"></text>
-            <text class="fr" v-if="overtime">诉讼时效已经过期，无法主张赔偿。</text>
+        <!-- <view class="unit-foot">
             <u-button v-if="!overtime" type="primary" class="fr btn" size="mini" throttle-time="100" @click="showDetail()">查看详情</u-button>
             <u-button v-if="!overtime" type="primary" class="fr btn" size="mini" throttle-time="100" @click="showMap()">地图</u-button>
-        </view>
+        </view> -->
     </view>
 </template>
 <script>
+import $business from "@/common/business.js";
+import $util from "@/common/util.js";
+
 export default {
     props: {
         data: {},
     },
     data() {
         return {
-            unitModel1: [
+            channels: [
                 {
-                    label: "实施日",
-                    name: "implementationDate",
-                    class: "color-primary",
-                    isMoney: true,
-                },
-                { label: "揭露日", name: "disclosureDate" },
-                {
-                    label: "基准日",
-                    name: "baseDate",
-                    isMoney: true,
-                },
-                { label: "时效", name: "actionLimitation" },
-                {
-                    label: "赔偿能力",
-                    format(data) {
-                        return (
-                            {
-                                "-1": "E",
-                                0: "D",
-                                1: "C",
-                                2: "B",
-                                3: "A",
-                            }[data.businessType] || "-"
-                        );
-                    },
+                    no: "CH1",
+                    label: "压力",
+                    value: "0.5",
+                    unit: "MPA",
                 },
                 {
-                    label: "备注",
-                    name: "remark",
-                    class: "color-999 monopolize",
+                    no: "CH1",
+                    label: "压力",
+                    value: "0.5",
+                    unit: "MPA",
+                },
+                {
+                    no: "CH1",
+                    label: "压力",
+                    value: "0.5",
+                    unit: "MPA",
+                },
+                {
+                    no: "CH1",
+                    label: "压力",
+                    value: "0.5",
+                    unit: "MPA",
                 },
             ],
         };
     },
     methods: {
+        formatTime(v) {
+            return $util.Dates.format(v);
+        },
         showDetail() {
             uni.navigateTo({
                 url: `./detail?id=${this.data.id}&name=${this.data.name}`,
             });
             this.$store.commit("switch_loading");
         },
-        showMap(){
+        showMap() {
             uni.navigateTo({
                 url: `./map?id=${this.data.id}&name=${this.data.name}`,
             });
@@ -105,6 +114,12 @@ export default {
             date.setDate(actionLimitation.substr(6, 2));
             return date.getTime() < Date.now();
         },
+        statusDom() {
+            return `
+                ${$business.generateElectricityDom(this.data.powerpercent)}
+                ${$business.generateCsqDom(this.data.csq)}
+            `;
+        },
     },
     created() {},
 };
@@ -118,46 +133,53 @@ export default {
     background-color: #ffffff;
     font-size: 28upx;
     transform: all 1s;
-    &.overtime {
-        .unit-body {
-            text {
-                color: #bdbdbd !important;
+    border-bottom: 1px solid #cdcdcd;
+    .unit-head {
+        padding: 5upx 10upx;
+        height: 100upx;
+        box-sizing: border-box;
+        border-bottom: 2upx solid #e4e7ed;
+        background: #0a73ff;
+        color: #fff;
+        font-size: 28upx;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        .uni-title {
+            .mini-sn {
+                font-size: 12upx;
+            }
+        }
+        .uni-operate {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            .sunseticon-location {
+                font-size: 50upx;
+                display: inline-block;
+                vertical-align: middle;
             }
         }
     }
-    .unit-head {
-        padding: 20upx;
-        height: 80upx;
-        line-height: 40upx;
-        box-sizing: border-box;
-        border-bottom: 2upx solid #e4e7ed;
-        background: #0d3a63;
-        color: #fff;
-        font-size: 28upx;
-    }
-    .product_code_label {
-        position: relative;
-        font-weight: bold;
-        &.label-invalid {
-            color: #ababab;
-        }
-        &.label-one-month {
-            color: rgb(255, 58, 58);
-        }
-        &.label-three-month {
-            color: orange;
-        }
-    }
     .unit-body {
-        padding: 20upx;
+        padding: 10upx 5upx;
         display: flex;
         flex-wrap: wrap;
-        text {
-            width: 50%;
-            font-size: 28upx;
-            line-height: 55upx;
-            &.monopolize {
-                width: 100%;
+        background: #f6f6f6;
+        display: flex;
+        flex-direction: row;
+        .device-channel {
+            box-sizing: border-box;
+            border: 1px solid #dedede;
+            background: #fff;
+            margin: 2px 5upx;
+            padding: 2upx 10upx;
+            width: calc(50% - 10upx);
+            .sunseticon {
+                padding: 0upx 5upx;
+                float: right;
+                font-size: 28upx;
             }
         }
     }

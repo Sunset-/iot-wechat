@@ -1,70 +1,29 @@
 <template>
-    <view class="uni-container">
-        <view class="uni-panel">
-            <u-swiper :list="banners"></u-swiper>
-        </view>
-        <view class="uni-panel">
-            <u-grid :col="2">
-                <u-grid-item @click="zjss">
-                    <u-icon name="grid-fill" :size="46"></u-icon>
-                    <view class="grid-text">查询股票</view>
-                </u-grid-item>
-                <u-grid-item @click="prompt('calculate')">
-                    <u-icon name="rmb-circle-fill" :size="46"></u-icon>
-                    <view class="grid-text">亏损计算</view>
-                </u-grid-item>
-                <u-grid-item @click="prompt('order')">
-                    <u-icon name="bookmark-fill" :size="46"></u-icon>
-                    <view class="grid-text">证券诉讼</view>
-                </u-grid-item>
-                <u-grid-item @click="authJump('/pages/payapply/index')">
-                    <u-icon name="red-packet-fill" :size="46"></u-icon>
-                    <view class="grid-text">案件款申请</view>
-                </u-grid-item>
-            </u-grid>
-        </view>
-        <view class="uni-panel">
-            <u-grid :col="2">
-                <u-grid-item @click="authJump('/pages/crossdomain/index')">
-                    <u-icon name="map-fill" :size="46"></u-icon>
-                    <view class="grid-text">跨域立案</view>
-                </u-grid-item>
-                <!-- <u-grid-item>
-                    <u-icon name="red-packet-fill" :size="46"></u-icon>
-                    <view class="grid-text">信用卡诉讼</view>
-                </u-grid-item> -->
-                <u-grid-item @click="authJump('/pages/publishwant/index')">
-                    <u-icon name="order" :size="46"></u-icon>
-                    <view class="grid-text">发布法律需求</view>
-                </u-grid-item>
-                <u-grid-item @click="authJump('/pages/publishwant/index')">
-                    <u-icon name="order" :size="46"></u-icon>
-                    <view class="grid-text">交通肇事纠纷</view>
-                </u-grid-item>
-                <u-grid-item @click="authJump('/pages/publishwant/index')">
-                    <u-icon name="order" :size="46"></u-icon>
-                    <view class="grid-text">土地和施工纠纷</view>
-                </u-grid-item>
-                <u-grid-item @click="authJump('/pages/publishwant/index')">
-                    <u-icon name="order" :size="46"></u-icon>
-                    <view class="grid-text">借款纠纷</view>
-                </u-grid-item>
-                <u-grid-item>
-                    <u-icon name="order" :size="46"></u-icon>
-                    <view class="grid-text">行业法律需求</view>
-                </u-grid-item>
-            </u-grid>
-        </view>
-        <!-- <view class="auto-regist-modal" v-show="showAutoRegist">
-            <view class="auto-regist-modal-content">
-                <view class="auto-regist-modal-title">
-                    获取公开信息，以使用更多功能
-                </view>
-                <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击获取公开信息</u-button>
+    <view class="uni-container container-home">
+        <view class="uni-panel home-online-chart">
+            <view class="screen-pie-chart">
+                <qiun-data-charts type="arcbar" :opts="{title:{name:'80%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" />
             </view>
-        </view> -->
+            <view class="screen-chart2-detail">
+                <view>
+                    <label>设备总数</label>
+                    <span>{{chartOptionsLeft2.deviceCount}}</span>
+                </view>
+                <view>
+                    <label>在线设备</label>
+                    <span>{{chartOptionsLeft2.onlineDeviceCount}}</span>
+                </view>
+                <view>
+                    <label>离线设备</label>
+                    <span>{{chartOptionsLeft2.offlineDeviceCount}}</span>
+                </view>
+            </view>
+        </view>
+        <view class="uni-panel">
+            <view class="panel-title" sub="单位：台">日活设备</view>
+            <qiun-data-charts  type="area" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+        </view>
         <u-toast ref="uToast" />
-        <s-prompt ref="prompt" title="查询" placeholder="请输入股票代码" text="股票代码"></s-prompt>
     </view>
 </template>
 <script>
@@ -75,37 +34,35 @@ export default {
     data() {
         return {
             showAutoRegist: false,
-            banners: [
-                {
-                    image: "https://18851.online/proxy-img/static/banner_0.png",
-                    title: "昨夜星辰昨夜风，画楼西畔桂堂东",
-                },
-                // {
-                //     image: "https://cdn.uviewui.com/uview/swiper/2.jpg",
-                //     title: "身无彩凤双飞翼，心有灵犀一点通",
-                // },
-                // {
-                //     image: "https://cdn.uviewui.com/uview/swiper/3.jpg",
-                //     title: "谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳",
-                // },
-            ],
+            chartOptionsLeft2: {
+                alarmDeviceCount: 0,
+                deviceCount: 0,
+                offlineDeviceCount: 0,
+                onlineDeviceCount: 0,
+                signalType: 0,
+            },
+            chartsDataArcbar1: {
+                series: [
+                    {
+                        name: "在线率",
+                        data: 0.8,
+                        color: "#0a73ff",
+                    },
+                ],
+            },
+            chartData2: {
+                categories: ["2016", "2017", "2018", "2019", "2020", "2021"],
+                series: [
+                    {
+                        name: "活跃设备",
+                        data: [35, 36, 31, 33, 13, 34],
+                    },
+                ],
+            },
         };
     },
-    onLoad() {
-        wx.showShareMenu({
-            menus: ["shareAppMessage", "shareTimeline"],
-        });
-        // $auth
-        //     .getCurrentUser()
-        //     .then((res) => {
-        //         this.showAutoRegist = false;
-        //     })
-        //     .catch((e) => {
-        //         this.showAutoRegist = true;
-        //     });
-    },
     methods: {
-        login(){
+        login() {
             $auth.login().then((res) => {
                 if (res.id) {
                     this.showAutoRegist = false;
@@ -113,8 +70,8 @@ export default {
                 }
                 //自动注册
                 Store.regist({
-                    openId : res.openId,
-                    name : res.wechatUserInfo.nickName
+                    openId: res.openId,
+                    name: res.wechatUserInfo.nickName,
                 }).then((res) => {
                     this.showAutoRegist = false;
                 });
@@ -196,30 +153,70 @@ export default {
 </script>
 <style lang="less">
 @import "@/common/uni-nvue.css";
-.auto-regist-modal {
+.container-home {
     position: absolute;
     top: 0px;
     left: 0px;
     right: 0px;
     bottom: 0px;
-    background: rgba(0, 0, 0, 0.2);
-    z-index: 999;
-    .auto-regist-modal-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-left: -150px;
-        margin-top: -100px;
-        width: 300px;
-        height: 200px;
-        background: #fff;
-        border-radius: 5px;
-        border: 1px solid #dedede;
-        padding: 20px;
-        .auto-regist-modal-title {
-            text-align: center;
-            padding: 20px;
-            font-size: 32upx;
+    background: #000;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    .home-online-chart {
+        background: #0f1418;
+        display: flex;
+        flex-direction: column;
+        height: 45%;
+        .screen-pie-chart{
+            flex-grow: 1;
+            height: 60%;
+            position: relative;
+            padding-top:10px;
+        }
+    }
+    .screen-panel {
+        background: rgba(#0f1418, 1);
+        border: 5px solid #000;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        .panel-title {
+            font-size: 16px;
+            color: #fff;
+            flex: 0 0 30px;
+            &:after {
+                content: attr(sub);
+                float: right;
+                font-size: 12px;
+                color: #999;
+            }
+        }
+        .panel-chart {
+            flex-grow: 1;
+        }
+    }
+    .screen-chart2-detail {
+        display: flex;
+        flex-direction: row;
+        flex: 0 0 50px;
+        text-align: center;
+        padding: 10px 20px;
+        justify-content: space-around;
+        & > div {
+            display: inline-block;
+            padding: 5px 10px;
+        }
+        label {
+            display: block;
+            color: #7acdef;
+        }
+        span {
+            padding-top: 5px;
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0a73ff;
         }
     }
 }
