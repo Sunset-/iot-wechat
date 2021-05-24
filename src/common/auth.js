@@ -33,7 +33,7 @@ export default {
                   // 请求参数code
                   type: "POST",
                   data: {
-                    code: codeRes.code,
+                    js_code: codeRes.code,
                     scene : scene,
                     openId: uni.getStorageSync("OPEN_ID"),
                   },
