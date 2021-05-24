@@ -1,5 +1,8 @@
 <template>
     <view class="uni-container container-home">
+        <view>
+            <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
+        </view>
         <view class="uni-panel home-online-chart">
             <view class="screen-pie-chart">
                 <qiun-data-charts type="arcbar" :opts="{title:{name:'80%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" />
@@ -21,7 +24,8 @@
         </view>
         <view class="uni-panel">
             <view class="panel-title" sub="单位：台">日活设备</view>
-            <qiun-data-charts  type="area" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+            <!-- <qiun-loading></qiun-loading> -->
+            <qiun-data-charts style="height:200px;"  type="area" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
         </view>
         <u-toast ref="uToast" />
     </view>
@@ -62,19 +66,21 @@ export default {
         };
     },
     methods: {
-        login() {
+        login(e) {
             $auth.login().then((res) => {
-                if (res.id) {
-                    this.showAutoRegist = false;
-                    return;
-                }
+                // if (res.id) {
+                //     //已注册
+                //     this.userInfo = res;
+                //     console.log("已登录用户：", res);
+                //     return;
+                // }
                 //自动注册
-                Store.regist({
-                    openId: res.openId,
-                    name: res.wechatUserInfo.nickName,
-                }).then((res) => {
-                    this.showAutoRegist = false;
-                });
+                // Store.regist({
+                //     openId: res.openId,
+                //     name: res.wechatUserInfo.nickName,
+                // }).then((res) => {
+                //     this.login();
+                // });
             });
         },
         zjss() {

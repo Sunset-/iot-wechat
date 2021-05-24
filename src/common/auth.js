@@ -3,9 +3,15 @@ import { createLogger } from "vuex";
 
 var currentUser = null;
 
+var appId = "wx79ae61284641d89d";
+var scene = "";
 var testId = void 0;//"oVigB5VHdnxkYiSflMT93-Yd2nsA_"; 
 
 export default {
+  setScene(sc){
+    scene = sc;
+    console.log("scene:"+sc)
+  },
   login() {
     return new Promise((resolve, reject) => {
       // 获取用户信息
@@ -23,11 +29,12 @@ export default {
                 //发起网络请求
                 $http({
                   // 请求路径
-                  url: `/api/wechat_user/login`,
+                  url: `/api/m/sys/user/loginByMP`,
                   // 请求参数code
                   type: "POST",
                   data: {
                     code: codeRes.code,
+                    scene : scene,
                     openId: uni.getStorageSync("OPEN_ID"),
                   },
                 }).then((loginRes) => {

@@ -1,6 +1,6 @@
 <template>
     <view class="uni-container u-p-10">
-        <qiun-data-charts type="area" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+        <!-- <qiun-data-charts type="area" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" /> -->
     </view>
 </template>
 

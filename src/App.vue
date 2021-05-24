@@ -3,7 +3,11 @@ import $auth from "@/common/auth.js";
 
 export default {
     onLaunch: function () {},
-    onShow: function () {
+    onShow: function (options) {
+        $auth.setScene(options&&options.scene);
+        uni.showToast({
+            title: options.scene
+        });
         $auth.getCurrentUser();
     },
     onHide: function () {

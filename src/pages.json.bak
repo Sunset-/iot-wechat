@@ -31,12 +31,10 @@
 				"navigationBarTitleText": "详情",
 				"navigationBarBackgroundColor" : "#0d3a63"
 			}
-		}
+		}	
 	],
 	"globalStyle": {
-		// #ifdef MP-360
 		"navigationStyle": "custom",
-		// #endif
 		"pageOrientation": "portrait",
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "Hello uniapp",
