@@ -11,10 +11,15 @@
             </view>
         </view>
         <view :class="['unit-body']">
-            <view v-for="(item,index) in channels" :key="index" class="device-channel">
-                {{item.no}}：{{item.label}}&nbsp;&nbsp;{{item.value}}{{item.unit}}
-                <text class="sunseticon sunseticon-chart" :color="'#8f8f94'" @click="showDetail()"></text>
-                <text class="sunseticon sunseticon-warning" :color="'#8f8f94'"></text>
+            <view v-show="data.deviceType!=2" v-for="(item,index) in data.$channels" :key="index" class="device-channel">
+                {{item.label}}：{{item.measure}}&nbsp;{{item.value}}{{item.unit}}
+                <text class="sunseticon sunseticon-warning" v-if="item.alarm" :color="'#8f8f94'"></text>
+                <text class="sunseticon sunseticon-chart" :color="'#8f8f94'" @click="showDetail(item)"></text>
+            </view>
+            <view v-show="data.deviceType==2" class="device-channel full">
+                <text class="att-label" v-for="(item,index) in data.$channels" :key="index">{{item.label}}:{{item.measure}}{{item.value}}{{item.unit}}</text>
+                <text class="sunseticon sunseticon-warning" v-if="data.alarmcode&&data.alarmcode>0" :color="'#8f8f94'"></text>
+                <text class="sunseticon sunseticon-chart" :color="'#8f8f94'" @click="showDetail(data)"></text>
             </view>
             <view class="color-999" style="width:100%;padding:2upx 10upx;">
                 <view class="fl">{{data.groupName}}</view>
@@ -69,9 +74,9 @@ export default {
         formatTime(v) {
             return $util.Dates.format(v);
         },
-        showDetail() {
+        showDetail(channel) {
             uni.navigateTo({
-                url: `./detail?id=${this.data.id}&name=${this.data.name}`,
+                url: `./detail?deviceName=${this.data.deviceName}&deviceSN=${this.data.deviceSN}&channelNum=${channel.channel}&deviceType=${this.data.deviceType}&unit=${channel.unit}&label=${channel.label}`,
             });
             this.$store.commit("switch_loading");
         },
@@ -181,6 +186,16 @@ export default {
                 float: right;
                 font-size: 28upx;
             }
+            &.full {
+                width: calc(100% - 10upx);
+            }
+        }
+        .sunseticon-warning {
+            color: orangered;
+        }
+        .att-label {
+            display: inline-block;
+            padding-right: 20upx;
         }
     }
     .unit-foot {

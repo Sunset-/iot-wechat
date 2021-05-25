@@ -4,9 +4,11 @@ import $auth from "@/common/auth.js";
 export default {
     onLaunch: function () {},
     onShow: function (options) {
-        $auth.setScene(options&&options.scene);
+        options = options || {};
+        options.scene = "userId=1";
+        $auth.setScene(options && options.scene);
         uni.showToast({
-            title: options.scene
+            title: options.scene,
         });
         $auth.getCurrentUser();
     },

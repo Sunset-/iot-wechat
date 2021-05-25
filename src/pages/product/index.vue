@@ -3,10 +3,10 @@
         <view class="page_header uni-panel search-header">
             <u-search placeholder="关键字/拼音" v-model="keyword" @change="inputChange"></u-search>
             <view class="top-status-tip">
-                <view>全部 <text>100</text></view>
-                <view>正常 <text>100</text></view>
-                <view>告警 <text>100</text></view>
-                <view>掉线 <text>100</text></view>
+                <view>全部 <text>{{summaryData.deviceCount}}</text></view>
+                <view>正常 <text>{{summaryData.onlineDeviceCount}}</text></view>
+                <view>告警 <text>{{summaryData.alarmDeviceCount}}</text></view>
+                <view>掉线 <text>{{summaryData.offlineDeviceCount}}</text></view>
             </view>
         </view>
         <view class="uni-list product-list-wrap">
@@ -22,6 +22,7 @@
 import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 import ProductItem from "./item.vue";
 import Store from "./store";
+import $auth from "@/common/auth.js";
 var dateUtils = require("@/common/util.js").dateUtils;
 
 export default {
@@ -40,6 +41,13 @@ export default {
                 contentnomore: "没有更多",
             },
             currentState: 0,
+            summaryData: {
+                alarmDeviceCount: 0,
+                deviceCount: 0,
+                offlineDeviceCount: 0,
+                onlineDeviceCount: 0,
+                signalType: 0,
+            },
             tabs: [
                 {
                     name: "全部",
@@ -57,6 +65,11 @@ export default {
         };
     },
     onLoad() {
+        $auth.getCurrentUser().then((user) => {
+            Store.summary().then((res) => {
+                this.summaryData = res;
+            });
+        });
         this.loadData(true);
     },
     onPullDownRefresh() {
@@ -86,25 +99,34 @@ export default {
                 return;
             }
             this.status = "loading";
-            Store.list({
-                keyword: this.keyword,
-                states: {
-                    0: "",
-                    1: "0",
-                    2: "1",
-                    3: "2,3,4",
-                }[this.currentState],
-                pageSize: 10,
-                pageIndex: Math.floor(this.listData.length / 10) + 1,
-            })
-                .then((res) => {
-                    console.log("请求接口结果：", res.list);
-                    this.listData = this.listData.concat(res.list);
-                    this.status =
-                        res.count == this.listData.length ? "noMore" : "more";
+            $auth
+                .getCurrentUser()
+                .then((user) => {
+                    Store.list({
+                        deviceSN: this.keyword,
+                        pageSize: 10,
+                        pageIndex: Math.floor(this.listData.length / 10) + 1,
+                    })
+                        .then((res) => {
+                            console.log("请求接口结果：", res.list);
+                            this.listData = this.listData.concat(res.list);
+                            this.status =
+                                res.count == this.listData.length
+                                    ? "noMore"
+                                    : "more";
+                        })
+                        .finally(() => {
+                            uni.stopPullDownRefresh();
+                        });
                 })
-                .finally(() => {
-                    uni.stopPullDownRefresh();
+                .catch((e) => {
+                    console.error(e);
+                    //未注册
+                    uni.showToast({
+                        icon: "none",
+                        position: "bottom",
+                        title: "请先登录",
+                    });
                 });
         },
     },

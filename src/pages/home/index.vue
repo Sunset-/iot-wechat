@@ -2,10 +2,11 @@
     <view class="uni-container container-home">
         <view>
             <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
+            <view>SCENE:{{scene}}</view>
         </view>
         <view class="uni-panel home-online-chart">
             <view class="screen-pie-chart">
-                <qiun-data-charts type="arcbar" :opts="{title:{name:'80%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" />
+                <qiun-data-charts type="arcbar" :animation="true" :opts="{title:{name:(chartOptionsLeft2.deviceCount==0?0:(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)).toFixed(0)+'%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" />
             </view>
             <view class="screen-chart2-detail">
                 <view>
@@ -22,88 +23,106 @@
                 </view>
             </view>
         </view>
-        <view class="uni-panel">
+        <view class="uni-panel home-line-chart">
             <view class="panel-title" sub="单位：台">日活设备</view>
             <!-- <qiun-loading></qiun-loading> -->
-            <qiun-data-charts style="height:200px;"  type="area" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+            <qiun-data-charts type="area" tooltipFormat="manyDate" :animation="true" startDate="2021-03-08" endDate="2021-05-13" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
         </view>
         <u-toast ref="uToast" />
     </view>
 </template>
 <script>
 import $auth from "@/common/auth.js";
+import $util from "@/common/util.js";
 import Store from "./store";
 
 export default {
     data() {
         return {
+            scene: "",
             showAutoRegist: false,
             chartOptionsLeft2: {
                 alarmDeviceCount: 0,
-                deviceCount: 0,
+                deviceCount: 100,
                 offlineDeviceCount: 0,
-                onlineDeviceCount: 0,
+                onlineDeviceCount: 50,
                 signalType: 0,
             },
             chartsDataArcbar1: {
                 series: [
                     {
                         name: "在线率",
-                        data: 0.8,
+                        data: 0,
                         color: "#0a73ff",
                     },
                 ],
             },
             chartData2: {
-                categories: ["2016", "2017", "2018", "2019", "2020", "2021"],
+                categories: [],
                 series: [
                     {
                         name: "活跃设备",
-                        data: [35, 36, 31, 33, 13, 34],
+                        data: [],
                     },
                 ],
             },
         };
     },
+    mounted() {
+        this.scene = $auth.getScene();
+        this.init();
+    },
     methods: {
-        login(e) {
-            $auth.login().then((res) => {
-                // if (res.id) {
-                //     //已注册
-                //     this.userInfo = res;
-                //     console.log("已登录用户：", res);
-                //     return;
-                // }
-                //自动注册
-                // Store.regist({
-                //     openId: res.openId,
-                //     name: res.wechatUserInfo.nickName,
-                // }).then((res) => {
-                //     this.login();
-                // });
-            });
-        },
-        zjss() {
-            uni.switchTab({
-                url: `/pages/product/index`,
-            });
-        },
-        authJump(page) {
+        init() {
             $auth
                 .getCurrentUser()
-                .then((res) => {
-                    uni.navigateTo({
-                        url: page,
+                .then(() => {
+                    Store.summary().then((res) => {
+                        this.chartOptionsLeft2 = res.left2;
+                        this.chartsDataArcbar1 = {
+                            series: [
+                                {
+                                    name: "在线率",
+                                    data: (
+                                        (res.left2.onlineDeviceCount * 1.0) /
+                                        res.left2.deviceCount
+                                    ).toFixed(1),
+                                    color: "#0a73ff",
+                                },
+                            ],
+                        };
+                    });
+                    Store.statistics().then((res) => {
+                        this.chartData2 = {
+                            categories: res.bottom1.map((item, index) => {
+                                if (index % 14 == 0) {
+                                    return $util.Dates.format(
+                                        item.addTime,
+                                        "yyyy-MM-dd"
+                                    );
+                                } else {
+                                    return "";
+                                }
+                            }),
+                            series: [
+                                {
+                                    name: "活跃设备",
+                                    rawCategories: res.bottom1.map(
+                                        (item, index) =>
+                                            $util.Dates.format(
+                                                item.addTime,
+                                                "yyyy-MM-dd"
+                                            )
+                                    ),
+                                    data: res.bottom1.map(
+                                        (item) => item.statisticValue
+                                    ),
+                                },
+                            ],
+                        };
                     });
                 })
-                .catch((e) => {
-                    //未注册
-                    uni.showToast({
-                        icon: "none",
-                        position: "bottom",
-                        title: "请先登录",
-                    });
-                });
+                .catch((e) => {});
         },
         overtime(product) {
             var actionLimitation = product["actionLimitation"];
@@ -169,17 +188,22 @@ export default {
     padding: 0px;
     display: flex;
     flex-direction: column;
+    color: #fff;
     .home-online-chart {
         background: #0f1418;
         display: flex;
         flex-direction: column;
         height: 45%;
-        .screen-pie-chart{
+        .screen-pie-chart {
             flex-grow: 1;
             height: 60%;
             position: relative;
-            padding-top:10px;
+            padding-top: 10px;
         }
+    }
+    .home-line-chart {
+        flex-direction: column;
+        height: 45%;
     }
     .screen-panel {
         background: rgba(#0f1418, 1);
