@@ -65,9 +65,9 @@ export default {
         };
     },
     onLoad(event) {
-        uni.setNavigationBarTitle({
-            title: event.name,
-        });
+        // uni.setNavigationBarTitle({
+        //     title: "设备数据："+event.deviceName,
+        // });
         this.deviceName = event.deviceName;
         this.deviceSN = event.deviceSN;
         this.currentFilter = {

@@ -144,6 +144,7 @@ export default {
                                     valuePre: sd[`valuePre${i}`],
                                     unit: unit,
                                     change: sd[`change${i}`],
+                                    alarmcode : sd[`alarmcode${i}`], 
                                     title: `上报时间：${$util.Dates.format(
                                         +sd[`addTime${i}`]
                                     )} 上次值：${preV}${unit}`,

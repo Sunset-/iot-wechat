@@ -13,7 +13,7 @@
         <view :class="['unit-body']">
             <view v-show="data.deviceType!=2" v-for="(item,index) in data.$channels" :key="index" class="device-channel">
                 {{item.label}}：{{item.measure}}&nbsp;{{item.value}}{{item.unit}}
-                <text class="sunseticon sunseticon-warning" v-if="item.alarm" :color="'#8f8f94'"></text>
+                <text class="sunseticon sunseticon-warning" v-if="item.alarmcode&&data.alarmcode>0" :color="'#8f8f94'"></text>
                 <text class="sunseticon sunseticon-chart" :color="'#8f8f94'" @click="showDetail(item)"></text>
             </view>
             <view v-show="data.deviceType==2" class="device-channel full">
