@@ -24,10 +24,15 @@ form {
 	flex: 1;
 }
 .uni-row {
+	display: flex;
 	flex-direction: row;
 }
 .uni-column {
+	display: flex;
 	flex-direction: column;
+}
+.uni-grow{
+	flex-grow: 1;
 }
 .uni-link{
 	color:#576B95;
@@ -204,7 +209,7 @@ radio-group label, checkbox-group label{
 }
 .uni-badge-primary {
 	color: #fff;
-	background-color: #007aff
+	background-color: #007aff;
 }
 .uni-badge-blue.uni-badge-inverted,
 .uni-badge-primary.uni-badge-inverted {

@@ -1,5 +1,5 @@
 <template>
-    <view class="uni-container u-p-10">
+    <view class="uni-container detail-container u-p-10">
         <view class="deviceName">
             设备数据曲线：{{deviceName}}
             <view class="deviceSN">
@@ -16,7 +16,9 @@
                 </label>
             </radio-group>
         </view>
-        <qiun-data-charts class="detail-chart" tooltipFormat="manyDate" type="mix" :opts="chartOpts" :chartData="chartData" />
+        <view class="detail-chart">
+            <qiun-data-charts tooltipFormat="manyDate" type="mix" :opts="chartOpts" :chartData="chartData" />
+        </view>
     </view>
 </template>
 
@@ -235,6 +237,13 @@ export default {
 @import "@/common/uni-nvue.css";
 </style>
 <style lang="scss">
+.detail-container{
+    position: absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+}
 .color-primary {
     color: #0d3a63;
 }
@@ -263,7 +272,7 @@ export default {
     padding-top: 5px;
     text-align: left;
     padding-left: 10px;
-    font-size: 25upx;
+    font-size: 28upx;
 }
 .date-filter {
     display: flex;
@@ -275,6 +284,6 @@ export default {
     }
 }
 .detail-chart {
-    height: 300px;
+    height: 55%;
 }
 </style>

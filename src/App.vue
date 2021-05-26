@@ -4,11 +4,10 @@ import $auth from "@/common/auth.js";
 export default {
     onLaunch: function () {},
     onShow: function (options) {
-        options = options || {};
-        options.scene = "userId=1";
-        $auth.setScene(options && options.scene);
+        var query = (options && options.query) || {};
+        $auth.setScene(query.scene);
         uni.showToast({
-            title: options.scene,
+            title: query.scene,
         });
         $auth.getCurrentUser();
     },
@@ -34,6 +33,10 @@ page {
     line-height: 1.8;
 }
 
+.uni-modal__bd {
+    text-align: left !important;
+    color: orangered !important;
+}
 .uni-header-logo {
     padding: 30rpx;
     flex-direction: column;

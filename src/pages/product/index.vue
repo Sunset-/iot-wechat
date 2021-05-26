@@ -1,12 +1,13 @@
 <template>
     <view class="product-container">
         <view class="page_header uni-panel search-header">
-            <u-search placeholder="关键字/拼音" v-model="keyword" @change="inputChange"></u-search>
+            <u-search class="search-input" placeholder="关键字/拼音" v-model="keyword" @change="inputChange"></u-search>
+            <!-- <u-tabs :list="tabs" active-color="#0a73ff" :is-scroll="false" :current="currentState" @change="tabsChange"></u-tabs> -->
             <view class="top-status-tip">
-                <view>全部 <text>{{summaryData.deviceCount}}</text></view>
-                <view>正常 <text>{{summaryData.onlineDeviceCount}}</text></view>
-                <view>告警 <text>{{summaryData.alarmDeviceCount}}</text></view>
-                <view>掉线 <text>{{summaryData.offlineDeviceCount}}</text></view>
+                <view>全部&nbsp;<text>{{summaryData.deviceCount}}</text></view>
+                <view>正常&nbsp;<text>{{summaryData.onlineDeviceCount}}</text></view>
+                <view>告警&nbsp;<text>{{summaryData.alarmDeviceCount}}</text></view>
+                <view>掉线&nbsp;<text>{{summaryData.offlineDeviceCount}}</text></view>
             </view>
         </view>
         <view class="uni-list product-list-wrap">
@@ -53,13 +54,13 @@ export default {
                     name: "全部",
                 },
                 {
-                    name: "立案",
+                    name: "正常",
                 },
                 {
-                    name: "处罚",
+                    name: "告警",
                 },
                 {
-                    name: "判决",
+                    name: "掉线",
                 },
             ],
         };
@@ -68,6 +69,20 @@ export default {
         $auth.getCurrentUser().then((user) => {
             Store.summary().then((res) => {
                 this.summaryData = res;
+                this.tabs =  [
+                    {
+                        name: "全部 "+res.deviceCount||'0',
+                    },
+                    {
+                        name: "正常 "+res.onlineDeviceCount||'0',
+                    },
+                    {
+                        name: "告警 "+res.alarmDeviceCount||'0',
+                    },
+                    {
+                        name: "掉线 "+res.offlineDeviceCount||'0',
+                    },
+                ]
             });
         });
         this.loadData(true);
@@ -148,7 +163,9 @@ export default {
         z-index: 10;
         background: #fff;
         border-bottom: 1px solid #ededed;
-        & > .u-search {
+        display: flex;
+        flex-direction: column;
+        .search-input {
             padding: 5px 5px 5px 5px;
         }
         .top-status-tip {

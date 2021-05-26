@@ -7,19 +7,19 @@
             </view>
             <view class="uni-operate">
                 <view v-html="statusDom"></view>
-                <text class="sunseticon sunseticon-location" :color="'#8f8f94'" @click="showMap()"></text>
+                <text :class="['sunseticon sunseticon-location',data.lat&&data.lng?'location-mark':'location-mark-disabled']" @click="showMap()"></text>
             </view>
         </view>
         <view :class="['unit-body']">
             <view v-show="data.deviceType!=2" v-for="(item,index) in data.$channels" :key="index" class="device-channel">
-                {{item.label}}：{{item.measure}}&nbsp;{{item.value}}{{item.unit}}
-                <text class="sunseticon sunseticon-warning" v-if="item.alarmcode&&data.alarmcode>0" :color="'#8f8f94'"></text>
-                <text class="sunseticon sunseticon-chart" :color="'#8f8f94'" @click="showDetail(item)"></text>
+                <text class="att-label">{{item.label}}：{{item.measure}}&nbsp;{{item.value}}{{item.unit}}</text>
+                <text class="sunseticon sunseticon-warning" v-if="item.alarmcode&&item.alarmcode>0" @click="showAlarm(item)"></text>
+                <text class="sunseticon sunseticon-chart" @click="showDetail(item)"></text>
             </view>
             <view v-show="data.deviceType==2" class="device-channel full">
                 <text class="att-label" v-for="(item,index) in data.$channels" :key="index">{{item.label}}:{{item.measure}}{{item.value}}{{item.unit}}</text>
-                <text class="sunseticon sunseticon-warning" v-if="data.alarmcode&&data.alarmcode>0" :color="'#8f8f94'"></text>
-                <text class="sunseticon sunseticon-chart" :color="'#8f8f94'" @click="showDetail(data)"></text>
+                <text class="sunseticon sunseticon-warning" v-if="data.alarmcode&&data.alarmcode>0" @click="showAlarm(data)"></text>
+                <text class="sunseticon sunseticon-chart" @click="showDetail(data)"></text>
             </view>
             <view class="color-999" style="width:100%;padding:2upx 10upx;">
                 <view class="fl">{{data.groupName}}</view>
@@ -30,11 +30,27 @@
             <u-button v-if="!overtime" type="primary" class="fr btn" size="mini" throttle-time="100" @click="showDetail()">查看详情</u-button>
             <u-button v-if="!overtime" type="primary" class="fr btn" size="mini" throttle-time="100" @click="showMap()">地图</u-button>
         </view> -->
+        <u-toast ref="uToast" />
     </view>
 </template>
 <script>
 import $business from "@/common/business.js";
 import $util from "@/common/util.js";
+const ALARM_CODE = [
+    "阈值下限报警",
+    "阈值上限报警",
+    "波动报警",
+    "DI触发报警",
+    "DI翻转报警",
+];
+const ALARM_CODE_CGQ = [
+    "温度下限报警",
+    "温度上限报警",
+    "电流1下限报警",
+    "电流1上限报警",
+    "电流2下限报警",
+    "电流2上限报警",
+];
 
 export default {
     props: {
@@ -80,9 +96,43 @@ export default {
             });
             this.$store.commit("switch_loading");
         },
+        showAlarm(data) {
+            var CODES =
+                this.data.deviceType == "1" ? ALARM_CODE : ALARM_CODE_CGQ;
+            var texts = [];
+            var code = +data.alarmcode;
+            CODES.forEach((codeText, index) => {
+                var k = 1;
+                k = k << index;
+                if ((code & k) == k) {
+                    texts.push(codeText);
+                }
+            });
+            uni.showModal({
+                title: `${this.data.deviceName}${
+                    this.data.deviceType == "1" ? " CH" + data.channel : ""
+                } - 告警`,
+                content: texts.join("\n"),
+                showCancel: false,
+                success: function (res) {
+                    if (res.confirm) {
+                        console.log("用户点击确定");
+                    } else if (res.cancel) {
+                        console.log("用户点击取消");
+                    }
+                },
+            });
+        },
         showMap() {
+            if (!this.data.lat || !this.data.lng) {
+                this.$refs.uToast.show({
+                    title: "无经纬度信息",
+                    type: "warning",
+                });
+                return;
+            }
             uni.navigateTo({
-                url: `./map?id=${this.data.id}&name=${this.data.name}`,
+                url: `./map?deviceSN=${this.data.deviceSN}`,
             });
             this.$store.commit("switch_loading");
         },
@@ -153,7 +203,7 @@ export default {
         align-items: center;
         .uni-title {
             .mini-sn {
-                font-size: 12upx;
+                font-size: 20upx;
             }
         }
         .uni-operate {
@@ -167,6 +217,12 @@ export default {
             }
         }
     }
+    .location-mark {
+        color: orange;
+    }
+    .location-mark-disabled {
+        color: #ababab;
+    }
     .unit-body {
         padding: 10upx 5upx;
         display: flex;
@@ -179,15 +235,20 @@ export default {
             border: 1px solid #dedede;
             background: #fff;
             margin: 2px 5upx;
-            padding: 2upx 10upx;
+            padding: 0upx 10upx;
+            height: 70upx;
             width: calc(50% - 10upx);
             .sunseticon {
-                padding: 0upx 5upx;
+                padding: 0upx 10upx;
                 float: right;
-                font-size: 28upx;
+                font-size: 36upx;
+                line-height: 70upx;
             }
             &.full {
                 width: calc(100% - 10upx);
+                .att-label {
+                    padding-right: 20upx;
+                }
             }
         }
         .sunseticon-warning {
@@ -195,7 +256,8 @@ export default {
         }
         .att-label {
             display: inline-block;
-            padding-right: 20upx;
+            font-size: 26upx;
+            line-height: 70upx;
         }
     }
     .unit-foot {

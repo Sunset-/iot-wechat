@@ -1,5 +1,12 @@
 import Config from "@/common/config.js";
 
+
+function setCookie(name, value, myDay) {
+    var oDate = new Date();
+    oDate.setDate(oDate.getDate() + myDay);
+    document.cookie = name + "=" + value + ";expires=" + oDate;
+}
+
 var JSSID = "";
 
 function http(opts) {
@@ -11,7 +18,7 @@ function http(opts) {
                 data: opts.data,
                 header: Object.assign(
                     {
-                        // Cookie: `JSSID=${JSSID}`,
+                        Cookie: `JSSID=${JSSID}`,
                         JSSID: `JSSID=${JSSID}`,
                     },
                     opts.header || {}
@@ -26,6 +33,7 @@ function http(opts) {
                 ) {
                     if (typeof res.data == "object" && res.data.exData) {
                         JSSID = res.data.exData;
+                        setCookie("JSSID",res.data.exData);
                     }
                     return resolve(res.data.data);
                 }
