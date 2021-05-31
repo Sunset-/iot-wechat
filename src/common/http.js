@@ -2,9 +2,11 @@ import Config from "@/common/config.js";
 
 
 function setCookie(name, value, myDay) {
-    var oDate = new Date();
-    oDate.setDate(oDate.getDate() + myDay);
-    document.cookie = name + "=" + value + ";expires=" + oDate;
+    if(document){
+        var oDate = new Date();
+        oDate.setDate(oDate.getDate() + myDay);
+        document.cookie = name + "=" + value + ";expires=" + oDate;
+    }
 }
 
 var JSSID = "";

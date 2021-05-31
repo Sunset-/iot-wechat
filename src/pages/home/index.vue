@@ -19,15 +19,18 @@
                 </view>
             </view>
         </view>
+        <view class="login-button"  v-if="loaded&&userInfo.id">
+            <u-button type="success" @click="subscribeAlarm(e)">点击订阅通知</u-button>
+        </view>
+        <view class="login-button" v-if="loaded&&!userInfo.id">
+            <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
+        </view>
         <view class="uni-panel home-line-chart ">
             <view class="panel-title" sub="单位：台">日活设备</view>
             <!-- <qiun-loading></qiun-loading> -->
             <view class="panel-chart">
                 <qiun-data-charts type="area" tooltipFormat="manyDate" :animation="true" startDate="2021-03-08" endDate="2021-05-13" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
             </view>
-        </view>
-        <view class="login-button" v-if="loaded&&!userInfo.id">
-            <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
         </view>
         <u-toast ref="uToast" />
     </view>
@@ -99,6 +102,19 @@ export default {
                     this.init();
                 }
             });
+        },
+        subscribeAlarm(){
+            uni.requestSubscribeMessage({
+                tmplIds: ['mDPNgIm27Bp8hl7QhzL-dGZyfN7vEIzier-LuiV3xvQ'],
+                success (res) {
+                    console.log("订阅成功：",JSON.stringify(res));
+                    uni.showToast({
+                        icon: "success",
+                        position: "bottom",
+                        title: "订阅成功",
+                    });
+                }
+            })
         },
         init() {
             $auth
