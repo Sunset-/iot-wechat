@@ -47,25 +47,26 @@
 		"mp-360": {
 			"navigationStyle": "custom"
 		}
-	},
-	"tabBar": {
-		"color": "#7A7E83",
-		"selectedColor": "#515151",
-		"borderStyle": "black",
-		"backgroundColor": "#F8F8F8",
-		"list": [
-			{
-				"pagePath": "pages/home/index",
-				"iconPath": "static/taber_pictrue/home.png",
-				"selectedIconPath": "static/taber_pictrue/home_selected.png",
-				"text": "首页"
-			},
-			{
-				"pagePath": "pages/product/index",
-				"iconPath": "static/taber_pictrue/fl.png",
-				"selectedIconPath": "static/taber_pictrue/fl_selected.png",
-				"text": "详情"
-			}
-		]
 	}
+	//,
+	// "tabBar": {
+	// 	"color": "#7A7E83",
+	// 	"selectedColor": "#515151",
+	// 	"borderStyle": "black",
+	// 	"backgroundColor": "#F8F8F8",
+	// 	"list": [
+	// 		{
+	// 			"pagePath": "pages/home/index",
+	// 			"iconPath": "static/taber_pictrue/home.png",
+	// 			"selectedIconPath": "static/taber_pictrue/home_selected.png",
+	// 			"text": "首页"
+	// 		},
+	// 		{
+	// 			"pagePath": "pages/product/index",
+	// 			"iconPath": "static/taber_pictrue/fl.png",
+	// 			"selectedIconPath": "static/taber_pictrue/fl_selected.png",
+	// 			"text": "详情"
+	// 		}
+	// 	]
+	// }
 }

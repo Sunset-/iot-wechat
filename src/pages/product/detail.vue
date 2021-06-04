@@ -17,7 +17,7 @@
             </radio-group>
         </view>
         <view class="detail-chart">
-            <qiun-data-charts tooltipFormat="manyDate" type="mix" :opts="chartOpts" :chartData="chartData" />
+            <qiun-data-charts tooltipFormat="manyDate" :animation="false"  type="mix" :opts="chartOpts" :chartData="chartData" />
         </view>
     </view>
 </template>

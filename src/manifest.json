@@ -140,10 +140,10 @@
 			"disableHostCheck": true,
 			"proxy": {
 				"/api": {
-					"target": "http://120.78.161.176:8030/",
-					"pathRewrite": {
-						"^/api": "/"
-					},
+					"target": "http://120.78.161.176:9080/",
+					// "pathRewrite": {
+					// 	"^/api": "/"
+					// },
 					// "target": "http://localhost:29999", //请求的目标域名
 					"changeOrigin": true,
 					"secure": false

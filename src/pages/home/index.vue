@@ -1,8 +1,8 @@
 <template>
     <view class="uni-container container-home">
-        <view class="uni-panel home-online-chart">
+        <view class="home-online-chart">
             <view class="screen-pie-chart">
-                <qiun-data-charts type="arcbar" :animation="true" :opts="{title:{name:(chartOptionsLeft2.deviceCount==0?0:(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)).toFixed(0)+'%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" />
+                <qiun-data-charts type="arcbar" :animation="false" :opts="{title:{name:(chartOptionsLeft2.deviceCount==0?0:(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)).toFixed(0)+'%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" />
             </view>
             <view class="screen-chart2-detail">
                 <view>
@@ -19,17 +19,18 @@
                 </view>
             </view>
         </view>
-        <view class="login-button"  v-if="loaded&&userInfo.id">
-            <u-button type="success" @click="subscribeAlarm(e)">点击订阅通知</u-button>
-        </view>
-        <view class="login-button" v-if="loaded&&!userInfo.id">
-            <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
-        </view>
-        <view class="uni-panel home-line-chart ">
+        <view class="home-line-chart ">
             <view class="panel-title" sub="单位：台">日活设备</view>
-            <!-- <qiun-loading></qiun-loading> -->
             <view class="panel-chart">
-                <qiun-data-charts type="area" tooltipFormat="manyDate" :animation="true" startDate="2021-03-08" endDate="2021-05-13" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+                <qiun-data-charts type="area" tooltipFormat="manyDate" :animation="false" startDate="2021-03-08" endDate="2021-05-13" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+            </view>
+        </view>
+        <view>
+            <view class="login-button" v-if="loaded&&userInfo.id">
+                <u-button type="success" @click="subscribeAlarm(e)">查看详情</u-button>
+            </view>
+            <view class="login-button" v-if="loaded&&!userInfo.id">
+                <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
             </view>
         </view>
         <u-toast ref="uToast" />
@@ -47,9 +48,9 @@ export default {
             showAutoRegist: false,
             chartOptionsLeft2: {
                 alarmDeviceCount: 0,
-                deviceCount: 100,
+                deviceCount: 0,
                 offlineDeviceCount: 0,
-                onlineDeviceCount: 50,
+                onlineDeviceCount: 0,
                 signalType: 0,
             },
             chartsDataArcbar1: {
@@ -103,18 +104,21 @@ export default {
                 }
             });
         },
-        subscribeAlarm(){
+        subscribeAlarm() {
             uni.requestSubscribeMessage({
-                tmplIds: ['mDPNgIm27Bp8hl7QhzL-dGZyfN7vEIzier-LuiV3xvQ'],
-                success (res) {
-                    console.log("订阅成功：",JSON.stringify(res));
-                    uni.showToast({
-                        icon: "success",
-                        position: "bottom",
-                        title: "订阅成功",
+                tmplIds: ["mDPNgIm27Bp8hl7QhzL-dGZyfN7vEIzier-LuiV3xvQ"],
+                success(res) {
+                    console.log("订阅成功：", JSON.stringify(res));
+                    // uni.showToast({
+                    //     icon: "success",
+                    //     position: "bottom",
+                    //     title: "订阅成功",
+                    // });
+                    uni.redirectTo({
+                        url: "/pages/product/index",
                     });
-                }
-            })
+                },
+            });
         },
         init() {
             $auth
@@ -183,6 +187,7 @@ export default {
     display: flex;
     flex-direction: column;
     color: #fff;
+    overflow: hidden;
     .home-online-chart {
         background: #0f1418;
         display: flex;
@@ -197,7 +202,7 @@ export default {
     .home-line-chart {
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
+        height: calc(55% - 60px);
     }
     .panel-title {
         font-size: 12px;
@@ -236,8 +241,8 @@ export default {
             color: #0a73ff;
         }
     }
-    .login-button{
-        padding:10px;
+    .login-button {
+        padding: 10px;
     }
 }
 </style>

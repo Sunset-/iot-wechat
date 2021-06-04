@@ -472,9 +472,11 @@ function measureText(text, fontSize, context) {
   context = false;
   // #endif
   if (context !== false && context !== undefined && context.setFontSize && context.measureText) {
+    // console.log(11111)
     context.setFontSize(fontSize)
     return context.measureText(text).width
   } else {
+    // console.log(22222)
     var text = text.split('');
     for (let i = 0; i < text.length; i++) {
       let item = text[i];
