@@ -3,14 +3,14 @@ import $http from "@/common/http.js";
 export default {
     summary(filter) {
         return $http({
-            url: `/api/m/device/info/left?noSign`,
+            url: `/m/device/info/left?noSign`,
             method: "POST",
             data: { version: "1.0" },
         });
     },
     statistics(filter) {
         return $http({
-            url: `/api/m/device/info/bottom?noSign`,
+            url: `/m/device/info/bottom?noSign`,
             method: "POST",
             data: { version: "1.0" },
         });

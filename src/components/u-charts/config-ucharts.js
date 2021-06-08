@@ -105,7 +105,6 @@ module.exports = {
         manyDate: function(item, category, index, opts) {
             return (
                 opts.series[0].rawCategories[index] +
-                item.name +
                 "：" +
                 item.data
             );
@@ -117,6 +116,7 @@ module.exports = {
         type: "line",
         color: color,
         padding: [15, 10, 0, 15],
+        dataLabel:false,
         xAxis: {
             disableGrid: true,
         },
@@ -277,6 +277,7 @@ module.exports = {
         type: "line",
         color: color,
         padding: [15, 10, 0, 15],
+        dataLabel:false,
         xAxis: {
             disableGrid: true,
         },
@@ -289,6 +290,7 @@ module.exports = {
             line: {
                 type: "straight",
                 width: 2,
+                labelWidth: 20,
             },
         },
     },
@@ -315,6 +317,7 @@ module.exports = {
     area: {
         type: "area",
         color: color,
+        dataLabel: false,
         padding: [15, 15, 0, 15],
         xAxis: {
             disableGrid: true,

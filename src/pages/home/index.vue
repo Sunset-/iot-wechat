@@ -26,10 +26,10 @@
             </view>
         </view>
         <view>
-            <view class="login-button" v-if="loaded&&userInfo.id">
+            <view class="login-button" v-if="loaded&&logined">
                 <u-button type="success" @click="subscribeAlarm(e)">查看详情</u-button>
             </view>
-            <view class="login-button" v-if="loaded&&!userInfo.id">
+            <view class="login-button" v-if="loaded&&!logined">
                 <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
             </view>
         </view>
@@ -73,6 +73,7 @@ export default {
             },
             userInfo: { wechatUserInfo: {} },
             loaded: false,
+            logined: false,
         };
     },
     onShow() {
@@ -85,6 +86,7 @@ export default {
                     this.userInfo = res;
                     this.init();
                     console.log("已登录用户：", res);
+                    this.logined = true;
                     return;
                 }
             })
@@ -100,11 +102,16 @@ export default {
             $auth.login().then((res) => {
                 this.currentUser = res;
                 if (res) {
+                    this.logined = true;
                     this.init();
                 }
             });
         },
         subscribeAlarm() {
+            // uni.redirectTo({
+            //     url: "/pages/product/index",
+            // });
+            // return;
             uni.requestSubscribeMessage({
                 tmplIds: ["mDPNgIm27Bp8hl7QhzL-dGZyfN7vEIzier-LuiV3xvQ"],
                 success(res) {
@@ -124,6 +131,7 @@ export default {
             $auth
                 .getCurrentUser()
                 .then(() => {
+                    this.logined = true;
                     Store.summary().then((res) => {
                         this.chartOptionsLeft2 = res.left2;
                         this.chartsDataArcbar1 = {
@@ -140,9 +148,10 @@ export default {
                         };
                     });
                     Store.statistics().then((res) => {
+                        var step = Math.floor(res.bottom1.length / 3);
                         this.chartData2 = {
                             categories: res.bottom1.map((item, index) => {
-                                if (index % 14 == 0) {
+                                if (index % step == 0) {
                                     return $util.Dates.format(
                                         item.addTime,
                                         "yyyy-MM-dd"

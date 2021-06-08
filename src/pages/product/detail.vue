@@ -17,7 +17,9 @@
             </radio-group>
         </view>
         <view class="detail-chart">
-            <qiun-data-charts tooltipFormat="manyDate" :animation="false"  type="mix" :opts="chartOpts" :chartData="chartData" />
+            <view :class="['detail-chart-inner','w-'+this.current]">
+                <qiun-data-charts tooltipFormat="manyDate" :animation="false"  type="line" :opts="chartOpts" :chartData="chartData" />
+            </view>
         </view>
     </view>
 </template>
@@ -39,7 +41,7 @@ export default {
                 { value: "1", name: "1Day" },
                 { value: "3", name: "3Days" },
                 { value: "7", name: "7Days" },
-                { value: "30", name: "30Days" },
+                // { value: "30", name: "30Days" },
             ],
             current: "7",
             chartData: {
@@ -93,7 +95,7 @@ export default {
         },
         getDetail() {
             var now = Date.now();
-            var start = now - 86400000 * this.current;
+            var start = now - 86400000 * (this.current-1);
             var filter = {
                 deviceSN: this.currentFilter.deviceSN,
                 channelNum: this.currentFilter.channelNum,
@@ -131,7 +133,7 @@ export default {
                                     rawCategories: res.map((item, index) =>
                                         $util.Dates.format(
                                             item.addTime,
-                                            "yyyy-MM-dd"
+                                            "yyyy-MM-dd HH:mm:ss"
                                         )
                                     ),
                                     type: "line",
@@ -146,7 +148,7 @@ export default {
                                     rawCategories: res.map((item, index) =>
                                         $util.Dates.format(
                                             item.addTime,
-                                            "yyyy-MM-dd"
+                                            "yyyy-MM-dd HH:mm:ss"
                                         )
                                     ),
                                     type: "line",
@@ -159,7 +161,7 @@ export default {
                                     rawCategories: res.map((item, index) =>
                                         $util.Dates.format(
                                             item.addTime,
-                                            "yyyy-MM-dd"
+                                            "yyyy-MM-dd HH:mm:ss"
                                         )
                                     ),
                                     type: "line",
@@ -184,13 +186,13 @@ export default {
                             },
                         };
                     } else {
-                        var step = Math.ceil(res.length / 3);
+                        var step = 100;
                         this.chartData = {
                             categories: res.map((item, index) => {
                                 if (index % step == 0) {
                                     return $util.Dates.format(
                                         item.addTime,
-                                        "yyyy-MM-dd"
+                                        "yyyy-MM-dd HH:mm:ss"
                                     );
                                 } else {
                                     return "";
@@ -202,10 +204,10 @@ export default {
                                     rawCategories: res.map((item, index) =>
                                         $util.Dates.format(
                                             item.addTime,
-                                            "yyyy-MM-dd"
+                                            "yyyy-MM-dd HH:mm:ss"
                                         )
                                     ),
-                                    data: res.map((item) => item.channelValue),
+                                    data: res.map((item) => +(item.channelValue)),
                                 },
                             ],
                         };
@@ -285,5 +287,19 @@ export default {
 }
 .detail-chart {
     height: 55%;
+    overflow-x: scroll;
+    .detail-chart-inner{
+        height:100%;
+        width:20000px;
+        &.w-7{
+            width:20000px;
+        }
+        &.w-3{
+            width:10000px;
+        }
+        &.w-1{
+            width:4000px;
+        }
+    }
 }
 </style>

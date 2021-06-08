@@ -471,7 +471,7 @@ function measureText(text, fontSize, context) {
   // #ifdef MP-ALIPAY || MP-BAIDU
   context = false;
   // #endif
-  if (context !== false && context !== undefined && context.setFontSize && context.measureText) {
+  if (false && context !== false && context !== undefined && context.setFontSize && context.measureText) {
     // console.log(11111)
     context.setFontSize(fontSize)
     return context.measureText(text).width

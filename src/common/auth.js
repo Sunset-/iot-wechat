@@ -5,7 +5,7 @@ var currentUser = null;
 
 var appId = "wx79ae61284641d89d";
 var scene = "";
-var testId = "oC-KV4vNwHAU4jC1eSr7HwQ5Jm2o"; //void 0; //;
+var testId = void 0; //;"oC-KV4vNwHAU4jC1eSr7HwQ5Jm2o"; //
 var currentUserPromise = null;
 
 export default {
@@ -33,7 +33,7 @@ export default {
                                 //发起网络请求
                                 $http({
                                     // 请求路径
-                                    url: `/api/m/sys/user/loginByMP?noSign`,
+                                    url: `/m/sys/user/loginByMP?noSign`,
                                     // 请求参数code
                                     type: "POST",
                                     data: {
@@ -82,7 +82,7 @@ export default {
         //发起网络请求
         return $http({
             // 请求路径
-            url: `/api/m/sys/user/loginByMP?noSign`,
+            url: `/m/sys/user/loginByMP?noSign`,
             // 请求参数code
             type: "POST",
             data: {

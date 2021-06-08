@@ -51,14 +51,14 @@ var CHANNEL_DATA_TYPE_LABEL = [
 export default {
     summary() {
         return $http({
-            url: `/api/m/device/info/getDeviceStatistical?noSign`,
+            url: `/m/device/info/getDeviceStatistical?noSign`,
             type: "POST",
             data: {},
         });
     },
     list(filter) {
         return $http({
-            url: `/api/m/data/real/queryMobileIndexByCond?noSign`,
+            url: `/m/data/real/queryMobileIndexByCond?noSign`,
             type: "POST",
             data: filter,
         }).then((res) => {
@@ -159,7 +159,7 @@ export default {
     },
     detailWg(filter) {
         return $http({
-            url: "/api/m/data/record/queryDataAnalysis?noSign",
+            url: "/m/data/record/queryDataAnalysis?noSign",
             type: "POST",
             data: filter,
         }).then((res) => {
@@ -171,7 +171,7 @@ export default {
     },
     detailCgq(filter) {
         return $http({
-            url: "/api/m/data/record_ct/list?noSign",
+            url: "/m/data/record_ct/list?noSign",
             type: "POST",
             data: filter,
         }).then((res) => {

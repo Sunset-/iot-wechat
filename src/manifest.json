@@ -139,8 +139,8 @@
 			"port": 8000,
 			"disableHostCheck": true,
 			"proxy": {
-				"/api": {
-					"target": "http://120.78.161.176:9080/",
+				"/m": {
+					"target": "https://www.qg-lot.com/",
 					// "pathRewrite": {
 					// 	"^/api": "/"
 					// },
