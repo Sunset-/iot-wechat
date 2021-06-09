@@ -174,6 +174,7 @@ function deepCloneAssign(origin = {}, ...args) {
 }
 
 function formatterAssign(args,formatter) {
+  debugger;
   for (let key in args) {
     if(typeof args[key] === 'object'){
       formatterAssign(args[key],formatter)

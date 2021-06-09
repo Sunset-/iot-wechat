@@ -6,21 +6,27 @@
                 SN: {{deviceSN}}
             </view>
         </view>
-        <view>
-            <radio-group @change="radioChange" class="date-filter">
+        <view class="uni-row filter-date">
+            <view class="uni-list-cell-left">
+                请选择日期
+            </view>
+            <picker class="date-picker" mode="date" :value="date" @change="getDetail">
+                <view>{{date}}</view>
+            </picker>
+            <!-- <radio-group @change="radioChange" class="date-filter">
                 <label class="uni-list-cell uni-list-cell-pd" v-for="(item) in items" :key="item.value">
                     <view>
                         <radio :value="item.value" :checked="item.value === current" />
                     </view>
                     <view>{{item.name}}</view>
                 </label>
-            </radio-group>
+            </radio-group> -->
         </view>
-        <view class="detail-chart">
-            <view :class="['detail-chart-inner','w-'+this.current]">
-                <qiun-data-charts tooltipFormat="manyDate" :animation="false"  type="line" :opts="chartOpts" :chartData="chartData" />
+        <scroll-view class="scroll-view_H detail-chart" scroll-x="true" scroll-left="0">
+            <view :class="['detail-chart-inner','w-'+chartStyle]">
+                <qiun-data-charts :animation="false" type="line" :opts="chartOpts" :chartData="chartData" />
             </view>
-        </view>
+        </scroll-view>
     </view>
 </template>
 
@@ -39,11 +45,12 @@ export default {
             model: {},
             items: [
                 { value: "1", name: "1Day" },
-                { value: "3", name: "3Days" },
+                { value: "2", name: "2Days" },
                 { value: "7", name: "7Days" },
                 // { value: "30", name: "30Days" },
             ],
-            current: "7",
+            current: "1",
+            date: $util.Dates.format(new Date(), "yyyy-MM-dd"),
             chartData: {
                 categories: [],
                 series: [
@@ -66,6 +73,9 @@ export default {
                 },
             },
             currentFilter: {},
+            chartStyle: "",
+            showChart: true,
+            runningFilter: {},
         };
     },
     onLoad(event) {
@@ -93,27 +103,31 @@ export default {
             }
             this.getDetail();
         },
-        getDetail() {
-            var now = Date.now();
-            var start = now - 86400000 * (this.current-1);
+        getDetail(e) {
+            this.date = e ? e.target.value : this.date;
             var filter = {
                 deviceSN: this.currentFilter.deviceSN,
                 channelNum: this.currentFilter.channelNum,
             };
-            filter.queryStartTime = $util.Dates.format(
-                start,
-                "yyyy-MM-dd 00:00:00"
-            );
-            filter.queryEndTime = $util.Dates.format(
-                now,
-                "yyyy-MM-dd 23:59:59"
-            );
+            filter.queryStartTime = `${this.date} 00:00:00`;
+            filter.queryEndTime = `${this.date} 23:59:59`;
+            this.runningFilter = filter;
+            console.log("1111111");
+            this.showChart = false;
             $auth.getCurrentUser().then((user) => {
+                console.log("222222");
                 Store[
                     this.currentFilter.deviceType == 2
                         ? "detailCgq"
                         : "detailWg"
                 ](filter).then((res) => {
+                    this.showChart = true;
+                    console.log("333333");
+                    if (this.runningFilter != filter) {
+                        return;
+                    }
+                    console.log("444444");
+                    console.log("55555");
                     if (this.currentFilter.deviceType == 2) {
                         var step = Math.ceil(res.length / 3);
                         this.chartData = {
@@ -173,8 +187,14 @@ export default {
                         this.chartOpts = {
                             yAxis: {
                                 data: [
-                                    { position: "left", title: "温度℃" },
-                                    { position: "right", title: "电流mA" },
+                                    {
+                                        position: "left",
+                                        title: "温度℃",
+                                    },
+                                    {
+                                        position: "right",
+                                        title: "电流mA",
+                                    },
                                 ],
                             },
                             extra: {
@@ -186,7 +206,8 @@ export default {
                             },
                         };
                     } else {
-                        var step = 100;
+                        console.log("666666");
+                        var step = Math.max(Math.ceil(res.length / 500), 1) * 5;
                         this.chartData = {
                             categories: res.map((item, index) => {
                                 if (index % step == 0) {
@@ -207,7 +228,7 @@ export default {
                                             "yyyy-MM-dd HH:mm:ss"
                                         )
                                     ),
-                                    data: res.map((item) => +(item.channelValue)),
+                                    data: res.map((item) => +item.channelValue),
                                 },
                             ],
                         };
@@ -228,6 +249,7 @@ export default {
                                 },
                             },
                         };
+                        console.log("777777");
                     }
                 });
             });
@@ -239,12 +261,12 @@ export default {
 @import "@/common/uni-nvue.css";
 </style>
 <style lang="scss">
-.detail-container{
+.detail-container {
     position: absolute;
-    top:0px;
-    left:0px;
-    right:0px;
-    bottom:0px;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
 }
 .color-primary {
     color: #0d3a63;
@@ -285,21 +307,45 @@ export default {
         padding: 0px;
     }
 }
+.filter-date {
+    height: 70upx;
+    line-height: 70upx;
+    background: #fff;
+    align-items: center;
+}
+.date-picker {
+    flex-grow: 1;
+}
 .detail-chart {
     height: 55%;
     overflow-x: scroll;
-    .detail-chart-inner{
-        height:100%;
-        width:20000px;
-        &.w-7{
-            width:20000px;
-        }
-        &.w-3{
-            width:10000px;
-        }
-        &.w-1{
-            width:4000px;
-        }
+    .detail-chart-inner {
+        height: 100%;
+        width: 20000px;
+        // &.w-1000 {
+        //     width: 8000px;
+        // }
+        // &.w-2000 {
+        //     width: 16000px;
+        // }
+        // &.w-3000 {
+        //     width: 24000px;
+        // }
+        // &.w-4000 {
+        //     width: 32000px;
+        // }
+        // &.w-5000 {
+        //     width: 40000px;
+        // }
+        // &.w-6000 {
+        //     width: 48000px;
+        // }
+        // &.w-7000 {
+        //     width: 56000px;
+        // }
+        // &.w-8000 {
+        //     width: 64000px;
+        // }
     }
 }
 </style>

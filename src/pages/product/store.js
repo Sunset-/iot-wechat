@@ -158,14 +158,17 @@ export default {
         });
     },
     detailWg(filter) {
+        console.log("store---1")
         return $http({
             url: "/m/data/record/queryDataAnalysis?noSign",
             type: "POST",
             data: filter,
         }).then((res) => {
+            console.log("store---2")
             if (filter.compareType == 1) {
                 res = [res];
             }
+            console.log("store---3")
             return res;
         });
     },

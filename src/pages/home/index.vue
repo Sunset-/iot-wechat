@@ -27,7 +27,7 @@
         </view>
         <view>
             <view class="login-button" v-if="loaded&&logined">
-                <u-button type="success" @click="subscribeAlarm(e)">查看详情</u-button>
+                <u-button type="success" @click="subscribeAlarm">查看详情</u-button>
             </view>
             <view class="login-button" v-if="loaded&&!logined">
                 <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
@@ -112,19 +112,25 @@ export default {
             //     url: "/pages/product/index",
             // });
             // return;
-            uni.requestSubscribeMessage({
-                tmplIds: ["mDPNgIm27Bp8hl7QhzL-dGZyfN7vEIzier-LuiV3xvQ"],
-                success(res) {
-                    console.log("订阅成功：", JSON.stringify(res));
-                    // uni.showToast({
-                    //     icon: "success",
-                    //     position: "bottom",
-                    //     title: "订阅成功",
-                    // });
-                    uni.redirectTo({
-                        url: "/pages/product/index",
-                    });
-                },
+            $auth.getCurrentUser().then((user) => {
+                var tmplIds = (
+                    user.alarmTemplateId ||
+                    "mDPNgIm27Bp8hl7QhzL-dGZyfN7vEIzier-LuiV3xvQ"
+                ).split(",");
+                uni.requestSubscribeMessage({
+                    tmplIds: tmplIds,
+                    success(res) {
+                        console.log("订阅成功：", JSON.stringify(res));
+                        // uni.showToast({
+                        //     icon: "success",
+                        //     position: "bottom",
+                        //     title: "订阅成功",
+                        // });
+                        uni.redirectTo({
+                            url: "/pages/product/index",
+                        });
+                    },
+                });
             });
         },
         init() {
@@ -178,7 +184,9 @@ export default {
                         };
                     });
                 })
-                .catch((e) => {});
+                .catch((e) => {
+                    console.error(e);
+                });
         },
     },
 };
