@@ -77,6 +77,7 @@ export default {
         };
     },
     onShow() {
+        this.init();
         $auth
             .loginByOpenId()
             .then((res) => {
@@ -84,7 +85,6 @@ export default {
                 if (res.id) {
                     //已注册
                     this.userInfo = res;
-                    this.init();
                     console.log("已登录用户：", res);
                     this.logined = true;
                     return;
@@ -134,59 +134,47 @@ export default {
             });
         },
         init() {
-            $auth
-                .getCurrentUser()
-                .then(() => {
-                    this.logined = true;
-                    Store.summary().then((res) => {
-                        this.chartOptionsLeft2 = res.left2;
-                        this.chartsDataArcbar1 = {
-                            series: [
-                                {
-                                    name: "在线率",
-                                    data: (
-                                        (res.left2.onlineDeviceCount * 1.0) /
-                                        res.left2.deviceCount
-                                    ).toFixed(1),
-                                    color: "#0a73ff",
-                                },
-                            ],
-                        };
-                    });
-                    Store.statistics().then((res) => {
-                        var step = Math.floor(res.bottom1.length / 3);
-                        this.chartData2 = {
-                            categories: res.bottom1.map((item, index) => {
-                                if (index % step == 0) {
-                                    return $util.Dates.format(
-                                        item.addTime,
-                                        "yyyy-MM-dd"
-                                    );
-                                } else {
-                                    return "";
-                                }
-                            }),
-                            series: [
-                                {
-                                    name: "活跃设备",
-                                    rawCategories: res.bottom1.map(
-                                        (item, index) =>
-                                            $util.Dates.format(
-                                                item.addTime,
-                                                "yyyy-MM-dd"
-                                            )
-                                    ),
-                                    data: res.bottom1.map(
-                                        (item) => item.statisticValue
-                                    ),
-                                },
-                            ],
-                        };
-                    });
-                })
-                .catch((e) => {
-                    console.error(e);
-                });
+            Store.summary().then((res) => {
+                this.chartOptionsLeft2 = res.left2;
+                this.chartsDataArcbar1 = {
+                    series: [
+                        {
+                            name: "在线率",
+                            data: (
+                                (res.left2.onlineDeviceCount * 1.0) /
+                                res.left2.deviceCount
+                            ).toFixed(1),
+                            color: "#0a73ff",
+                        },
+                    ],
+                };
+            });
+            Store.statistics().then((res) => {
+                var step = Math.floor(res.bottom1.length / 3);
+                this.chartData2 = {
+                    categories: res.bottom1.map((item, index) => {
+                        if (index % step == 0) {
+                            return $util.Dates.format(
+                                item.addTime,
+                                "yyyy-MM-dd"
+                            );
+                        } else {
+                            return "";
+                        }
+                    }),
+                    series: [
+                        {
+                            name: "活跃设备",
+                            rawCategories: res.bottom1.map((item, index) =>
+                                $util.Dates.format(item.addTime, "yyyy-MM-dd")
+                            ),
+                            data: res.bottom1.map(
+                                (item) => item.statisticValue
+                            ),
+                        },
+                    ],
+                };
+            });
         },
     },
 };
