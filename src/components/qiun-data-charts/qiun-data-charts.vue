@@ -531,7 +531,7 @@ export default {
                 //拷贝一下chartData，为了opts变更后统一数据来源
                 this.drawData = deepCloneAssign({}, this.chartData);
                 this.checkData(this.chartData);
-            } else if (this.localdata.length > 0) {
+            } else if (this.localdata&&this.localdata.length > 0) {
                 this.mixinDatacomLoading = true;
                 this.localdataInit(this.localdata);
             } else if (this.collection !== "") {
@@ -779,6 +779,7 @@ export default {
                 .exec();
         },
         getCloudData() {
+            return;
             if (this.mixinDatacomLoading == true) {
                 return;
             }

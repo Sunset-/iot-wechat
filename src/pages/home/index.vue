@@ -3,13 +3,16 @@
         <view class="home-online-chart">
             <view class="screen-pie-chart">
                 <!-- <qiun-data-charts type="arcbar" :animation="false" :opts="{title:{name:(chartOptionsLeft2.deviceCount==0?0:(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)).toFixed(0)+'%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" /> -->
-                <view :class="['loading','progress-'+(chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount))]">
+                <view
+                    :class="['loading','progress-'+(chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount))]">
                     <view class="left"></view>
                     <view class="right"></view>
-                    <view class="progress"><span class="loading-text">{{chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)}}%</span></view>
+                    <view class="progress"><span
+                            class="loading-text">{{chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)}}%</span>
+                    </view>
                 </view>
             </view>
-            <view class="screen-chart2-detail">
+            <view class="screen-online-detail">
                 <view>
                     <text class="label">设备总数</text>
                     <text class="span">{{chartOptionsLeft2.deviceCount}}</text>
@@ -27,7 +30,9 @@
         <view class="home-line-chart ">
             <view class="panel-title" sub="单位：台">日活设备</view>
             <view class="panel-chart">
-                <qiun-data-charts type="area" tooltipFormat="manyDate" :animation="true" startDate="2021-03-08" endDate="2021-05-13" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+                <qiun-data-charts class="panel-chart-inner" type="area" tooltipFormat="manyDate" :animation="true"
+                    startDate="2021-03-08" endDate="2021-05-13"
+                    :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
             </view>
         </view>
         <view>
@@ -206,35 +211,22 @@ export default {
         background: #0f1418;
         display: flex;
         flex-direction: column;
-        height: 45%;
+        height: 40%;
         flex-shrink: 0;
+        position: relative;
         .screen-pie-chart {
-            flex-grow: 1;
-            position: relative;
-            padding-top: 10px;
+            position:absolute;
+            left:0px;
+            top:0px;
+            right:0px;
+            bottom:150px;
         }
     }
-    .home-line-chart {
-        display: flex;
-        flex-direction: column;
-        height: calc(55% - 60px);
-    }
-    .panel-title {
-        font-size: 12px;
-        color: #fff;
-        padding: 0px 10px;
-        &:after {
-            content: attr(sub);
-            float: right;
-            font-size: 12px;
-            color: #999;
-        }
-    }
-    .panel-chart {
-        flex-grow: 1;
-        flex-shrink: 0;
-    }
-    .screen-chart2-detail {
+    .screen-online-detail {
+        position:absolute;
+        left:0px;
+        right:0px;
+        bottom:0px;
         display: flex;
         flex-direction: row;
         flex: 0 0 40px;
@@ -256,6 +248,26 @@ export default {
             font-size: 24px;
             font-weight: bold;
             color: #0a73ff;
+        }
+    }
+    .home-line-chart {
+        height: calc(60% - 70px);
+    }
+    .panel-title {
+        font-size: 12px;
+        color: #fff;
+        padding: 10px 10px 0px 10px;
+        &:after {
+            content: attr(sub);
+            float: right;
+            font-size: 12px;
+            color: #999;
+        }
+    }
+    .panel-chart {
+        height:calc(100% - 40px );
+        .panel-chart-inner{
+            height:300px;
         }
     }
     .login-button {
