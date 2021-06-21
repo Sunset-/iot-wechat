@@ -27,7 +27,7 @@
         <view class="home-line-chart ">
             <view class="panel-title" sub="单位：台">日活设备</view>
             <view class="panel-chart">
-                <qiun-data-charts type="area" tooltipFormat="manyDate" :animation="false" startDate="2021-03-08" endDate="2021-05-13" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+                <qiun-data-charts type="area" tooltipFormat="manyDate" :animation="true" startDate="2021-03-08" endDate="2021-05-13" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
             </view>
         </view>
         <view>
@@ -101,7 +101,6 @@ export default {
                 this.currentUser = res;
                 if (res) {
                     this.logined = true;
-                    this.init();
                 }
             });
         },
@@ -155,30 +154,35 @@ export default {
                 };
             });
             Store.statistics().then((res) => {
-                var step = Math.floor(res.bottom1.length / 3);
-                this.chartData2 = {
-                    categories: res.bottom1.map((item, index) => {
-                        if (index % step == 0) {
-                            return $util.Dates.format(
-                                item.addTime,
-                                "yyyy-MM-dd"
-                            );
-                        } else {
-                            return "";
-                        }
-                    }),
-                    series: [
-                        {
-                            name: "活跃设备",
-                            rawCategories: res.bottom1.map((item, index) =>
-                                $util.Dates.format(item.addTime, "yyyy-MM-dd")
-                            ),
-                            data: res.bottom1.map(
-                                (item) => item.statisticValue
-                            ),
-                        },
-                    ],
-                };
+                this.$nextTick(() => {
+                    var step = Math.floor(res.bottom1.length / 3);
+                    this.chartData2 = {
+                        categories: res.bottom1.map((item, index) => {
+                            if (index % step == 0) {
+                                return $util.Dates.format(
+                                    item.addTime,
+                                    "yyyy-MM-dd"
+                                );
+                            } else {
+                                return "";
+                            }
+                        }),
+                        series: [
+                            {
+                                name: "活跃设备",
+                                rawCategories: res.bottom1.map((item, index) =>
+                                    $util.Dates.format(
+                                        item.addTime,
+                                        "yyyy-MM-dd"
+                                    )
+                                ),
+                                data: res.bottom1.map(
+                                    (item) => item.statisticValue
+                                ),
+                            },
+                        ],
+                    };
+                });
             });
         },
     },

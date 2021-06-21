@@ -27,10 +27,10 @@
         </view>
         <!-- APP和H5采用renderjs渲染图表 -->
         <!-- #ifdef APP-VUE || H5 -->
-        <block v-if="echarts">
+        <!-- <block v-if="echarts">
             <view :style="{ background: background }" style="width: 100%;height: 100%;" :data-directory="directory" :id="'EC'+cid" :prop="echartsOpts" :change:prop="rdcharts.ecinit" :resize="echartsResize" :change:resize="rdcharts.ecresize" v-show="showchart" />
-        </block>
-        <block v-else>
+        </block> -->
+        <block><!--  v-else -->
             <view @tap="rdcharts.tap" @mousemove="rdcharts.mouseMove" @mousedown="rdcharts.mouseDown" @mouseup="rdcharts.mouseUp" @touchstart="rdcharts.touchStart" @touchmove="rdcharts.touchMove" @touchend="rdcharts.touchEnd" :id="'UC'+cid" :prop="uchartsOpts" :change:prop="rdcharts.ucinit">
                 <canvas :id="cid" :canvasId="cid" :style="{ width: cWidth + 'px', height: cHeight + 'px', background: background }" :disable-scroll="disableScroll" @error="_error" v-if="showchart" />
             </view>
