@@ -112,26 +112,33 @@ export default {
             //     url: "/pages/product/index",
             // });
             // return;
-            $auth.getCurrentUser().then((user) => {
-                var tmplIds = (
-                    user.alarmTemplateId ||
-                    "mDPNgIm27Bp8hl7QhzL-dGZyfN7vEIzier-LuiV3xvQ"
-                ).split(",");
-                uni.requestSubscribeMessage({
-                    tmplIds: tmplIds,
-                    success(res) {
-                        console.log("订阅成功：", JSON.stringify(res));
-                        // uni.showToast({
-                        //     icon: "success",
-                        //     position: "bottom",
-                        //     title: "订阅成功",
-                        // });
-                        uni.redirectTo({
-                            url: "/pages/product/index",
-                        });
-                    },
+            $auth
+                .getCurrentUser()
+                .then((user) => {
+                    var tmplIds = (
+                        user.alarmTemplateId ||
+                        "mDPNgIm27Bp8hl7QhzL-dGZyfN7vEIzier-LuiV3xvQ"
+                    ).split(",");
+                    uni.requestSubscribeMessage({
+                        tmplIds: tmplIds,
+                        success(res) {
+                            console.log("订阅成功：", JSON.stringify(res));
+                            // uni.showToast({
+                            //     icon: "success",
+                            //     position: "bottom",
+                            //     title: "订阅成功",
+                            // });
+                            uni.redirectTo({
+                                url: "/pages/product/index",
+                            });
+                        },
+                    });
+                })
+                .catch((e) => {
+                    uni.redirectTo({
+                        url: "/pages/product/index",
+                    });
                 });
-            });
         },
         init() {
             Store.summary().then((res) => {
@@ -198,6 +205,7 @@ export default {
         display: flex;
         flex-direction: column;
         height: 45%;
+        flex-shrink: 0;
         .screen-pie-chart {
             flex-grow: 1;
             position: relative;
@@ -222,6 +230,7 @@ export default {
     }
     .panel-chart {
         flex-grow: 1;
+        flex-shrink: 0;
     }
     .screen-chart2-detail {
         display: flex;
@@ -230,6 +239,7 @@ export default {
         text-align: center;
         padding: 5px 20px;
         justify-content: space-around;
+        flex-shrink: 0;
         & > * {
             display: inline-block;
             padding: 5px 10px;

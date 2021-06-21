@@ -1,7 +1,7 @@
 <template>
     <view class="uni-container map-container u-p-10 uni-flex uni-column">
         <view class="uni-grow">
-            <map style="width: 100%;height:100%;" :latitude="location.latitude" :scale="15" :longitude="location.longitude" :markers="covers">
+            <map style="width: 100%;height:100%;flex-shrink: 0;" :latitude="location.latitude" :scale="15" :longitude="location.longitude" :markers="covers">
                 <cover-view slot="callout">
                     <cover-view marker-id="1">
                         <view style="font-size:12px;width:50px;height:30px;">123</view>

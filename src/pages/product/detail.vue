@@ -112,22 +112,17 @@ export default {
             filter.queryStartTime = `${this.date} 00:00:00`;
             filter.queryEndTime = `${this.date} 23:59:59`;
             this.runningFilter = filter;
-            console.log("1111111");
             this.showChart = false;
             $auth.getCurrentUser().then((user) => {
-                console.log("222222");
                 Store[
                     this.currentFilter.deviceType == 2
                         ? "detailCgq"
                         : "detailWg"
                 ](filter).then((res) => {
                     this.showChart = true;
-                    console.log("333333");
                     if (this.runningFilter != filter) {
                         return;
                     }
-                    console.log("444444");
-                    console.log("55555");
                     if (this.currentFilter.deviceType == 2) {
                         var step = Math.ceil(res.length / 3);
                         this.chartData = {
@@ -206,7 +201,6 @@ export default {
                             },
                         };
                     } else {
-                        console.log("666666");
                         var step = Math.max(Math.ceil(res.length / 500), 1) * 5;
                         this.chartData = {
                             categories: res.map((item, index) => {
@@ -249,7 +243,6 @@ export default {
                                 },
                             },
                         };
-                        console.log("777777");
                     }
                 });
             });
