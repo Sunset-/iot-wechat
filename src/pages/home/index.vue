@@ -68,15 +68,7 @@ export default {
                     },
                 ],
             },
-            chartData2: {
-                categories: [],
-                series: [
-                    {
-                        name: "活跃设备",
-                        data: [],
-                    },
-                ],
-            },
+            chartData2: {},
             userInfo: { wechatUserInfo: {} },
             loaded: false,
             logined: false,
