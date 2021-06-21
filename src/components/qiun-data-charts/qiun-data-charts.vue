@@ -264,7 +264,7 @@ export default {
     },
     data() {
         return {
-            cid: "uchartsid",
+            cid: "uchartsid"+Date.now()+Math.round(Math.random()*1000),
             inWx: false,
             inAli: false,
             inTt: false,

@@ -2,7 +2,12 @@
     <view class="uni-container container-home">
         <view class="home-online-chart">
             <view class="screen-pie-chart">
-                <qiun-data-charts type="arcbar" :animation="false" :opts="{title:{name:(chartOptionsLeft2.deviceCount==0?0:(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)).toFixed(0)+'%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" />
+                <!-- <qiun-data-charts type="arcbar" :animation="false" :opts="{title:{name:(chartOptionsLeft2.deviceCount==0?0:(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)).toFixed(0)+'%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" /> -->
+                <view :class="['loading','progress-'+(chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount))]">
+                    <view class="left"></view>
+                    <view class="right"></view>
+                    <view class="progress"><span class="loading-text">{{chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)}}%</span></view>
+                </view>
             </view>
             <view class="screen-chart2-detail">
                 <view>
@@ -44,6 +49,7 @@ import Store from "./store";
 export default {
     data() {
         return {
+            ssss: 0.2,
             scene: "",
             showAutoRegist: false,
             chartOptionsLeft2: {
@@ -258,6 +264,87 @@ export default {
     }
     .login-button {
         padding: 10px;
+    }
+
+    .loading {
+        margin: 20px auto 0px auto;
+        width: 10em;
+        height: 10em;
+        position: relative;
+    }
+    .loading .progress {
+        position: absolute;
+        width: 8em;
+        height: 8em;
+        background-color: #0F1418;
+        border-radius: 50%;
+        left: 1em;
+        top: 1em;
+        line-height: 8em;
+        text-align: center;
+        .loading-text{
+            font-size:18px;
+        }
+    }
+
+    .left,
+    .right {
+        width: 5em;
+        height: 10em;
+        overflow: hidden;
+        position: relative;
+        float: left;
+        background-color: #999999;
+    }
+
+    .left {
+        border-radius: 10em 0 0 10em;
+    }
+
+    .right {
+        border-radius: 0 10em 10em 0;
+    }
+
+    .left:after,
+    .right:after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 5em;
+        height: 10em;
+        background-color: white;
+        border-radius: 10em 0 0 10em;
+        background-color: rgb(10, 115, 255);
+    }
+
+    .right:after {
+        content: "";
+        position: absolute;
+        display: block;
+        border-radius: 0 10em 10em 0;
+    }
+    .left:after {
+        transform-origin: right center;
+        transform: rotateZ( -180deg);
+    }
+    .right:after {
+        transform-origin: left center;
+        transform: rotateZ( -180deg);
+    }
+
+    .loop(@i) when (@i > 0) {
+        .loop((@i - 1));    // 递归调用自身
+        &.progress-@{i}{
+            .left:after {
+                transform: rotateZ( (max( @i - 50 ,0) / 50.0 * 180 + -180) * 1deg);
+            }
+            .right:after {
+                transform:  rotateZ( (min( @i ,50) / 50.0 * 180 + -180) * 1deg);
+            }
+        }
+    }
+    .loading{
+        .loop(100);
     }
 }
 </style>
