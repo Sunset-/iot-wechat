@@ -233,6 +233,7 @@ export default {
     .panel-chart {
         flex-grow: 1;
         flex-shrink: 0;
+        position: relative;
     }
     .screen-chart2-detail {
         display: flex;

@@ -24,7 +24,7 @@
         </view>
         <scroll-view class="scroll-view_H detail-chart" scroll-x="true" scroll-left="0">
             <view :class="['detail-chart-inner','w-'+chartStyle]">
-                <qiun-data-charts :animation="false" type="line" :opts="chartOpts" :chartData="chartData" />
+                <qiun-data-charts :animation="true" :type="chartType" :opts="chartOpts" :chartData="chartData" />
             </view>
         </scroll-view>
     </view>
@@ -43,6 +43,7 @@ export default {
             deviceName: "",
             deviceSN: "",
             model: {},
+            chartType: "line",
             items: [
                 { value: "1", name: "1Day" },
                 { value: "2", name: "2Days" },
@@ -65,6 +66,7 @@ export default {
                     data: [
                         {
                             title: "",
+                            tofix: 2,
                         },
                     ],
                 },
@@ -113,6 +115,7 @@ export default {
             filter.queryEndTime = `${this.date} 23:59:59`;
             this.runningFilter = filter;
             this.showChart = false;
+            this.chartData.series = [];
             $auth.getCurrentUser().then((user) => {
                 Store[
                     this.currentFilter.deviceType == 2
@@ -125,6 +128,8 @@ export default {
                     }
                     if (this.currentFilter.deviceType == 2) {
                         var step = Math.ceil(res.length / 3);
+                        this.chartType = "mix";
+                        this.chartStyle = "500";
                         this.chartData = {
                             categories: res.map((item, index) => {
                                 if (index % step == 0) {
@@ -181,16 +186,34 @@ export default {
                         };
                         this.chartOpts = {
                             yAxis: {
+                                disableGrid: !res || res.length == 0,
                                 data: [
                                     {
                                         position: "left",
                                         title: "温度℃",
+                                        tofix: 1,
                                     },
                                     {
                                         position: "right",
                                         title: "电流mA",
+                                        tofix: 2,
                                     },
                                 ],
+                            },
+                            legend: {
+                                show: true,
+                                position: "bottom",
+                                float: "center",
+                                padding: 5,
+                                margin: 5,
+                                backgroundColor: "rgba(0,0,0,0)",
+                                borderColor: "rgba(0,0,0,0)",
+                                borderWidth: 0,
+                                fontSize: 13,
+                                fontColor: "#666666",
+                                lineHeight: 11,
+                                hiddenColor: "#CECECE",
+                                itemGap: 10,
                             },
                             extra: {
                                 area: {
@@ -201,7 +224,9 @@ export default {
                             },
                         };
                     } else {
-                        var step = Math.max(Math.ceil(res.length / 500), 1) * 5;
+                        var step = Math.max(Math.ceil(res.length / 500), 1) * 8;
+                        this.chartType = "line";
+                        this.chartStyle = "";
                         this.chartData = {
                             categories: res.map((item, index) => {
                                 if (index % step == 0) {
@@ -228,10 +253,12 @@ export default {
                         };
                         this.chartOpts = {
                             yAxis: {
+                                disableGrid: !res || res.length == 0,
                                 data: [
                                     {
                                         position: "left",
                                         title: this.currentFilter.unit,
+                                        tofix: 2,
                                     },
                                 ],
                             },
@@ -312,9 +339,13 @@ export default {
 .detail-chart {
     height: 55%;
     overflow-x: scroll;
+    position: relative;
     .detail-chart-inner {
         height: 100%;
-        width: 20000px;
+        width: 15000px;
+        &.w-500 {
+            width: 1000px;
+        }
         // &.w-1000 {
         //     width: 8000px;
         // }

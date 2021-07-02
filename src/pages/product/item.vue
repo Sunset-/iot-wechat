@@ -12,12 +12,12 @@
         </view>
         <view :class="['unit-body']">
             <view v-show="data.deviceType!=2" v-for="(item,index) in data.$channels" :key="index" class="device-channel">
-                <text class="att-label">{{item.label}}：{{item.measure}}&nbsp;{{item.value}}{{item.unit}}</text>
+                <text class="att-label" @click="showDetail(item)">{{item.label}}:{{item.measure}}&nbsp;{{item.value}}{{item.unit}}</text>
                 <text class="sunseticon sunseticon-warning" v-if="item.alarmcode&&item.alarmcode>0" @click="showAlarm(item)"></text>
                 <text class="sunseticon sunseticon-chart" @click="showDetail(item)"></text>
             </view>
             <view v-show="data.deviceType==2" class="device-channel full">
-                <text class="att-label" v-for="(item,index) in data.$channels" :key="index">{{item.label}}:{{item.measure}}{{item.value}}{{item.unit}}</text>
+                <text class="att-label" v-for="(item,index) in data.$channels" :key="index"  @click="showDetail(item)">{{item.label}}:{{item.measure}}{{item.value}}{{item.unit}}</text>
                 <text class="sunseticon sunseticon-warning" v-if="data.alarmcode&&data.alarmcode>0" @click="showAlarm(data)"></text>
                 <text class="sunseticon sunseticon-chart" @click="showDetail(data)"></text>
             </view>
@@ -239,9 +239,9 @@ export default {
             height: 70upx;
             width: calc(50% - 10upx);
             .sunseticon {
-                padding: 0upx 10upx;
+                padding: 0upx 8upx;
                 float: right;
-                font-size: 36upx;
+                font-size: 28upx;
                 line-height: 70upx;
             }
             &.full {
@@ -256,7 +256,7 @@ export default {
         }
         .att-label {
             display: inline-block;
-            font-size: 26upx;
+            font-size: 22upx;
             line-height: 70upx;
         }
     }
