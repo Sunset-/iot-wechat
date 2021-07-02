@@ -1,19 +1,20 @@
 <template>
-    <view class="uni-container map-container u-p-10 uni-flex uni-column">
-        <view class="uni-grow">
-            <map style="width: 100%;height:100%;flex-shrink: 0;" :latitude="location.latitude" :scale="15" :longitude="location.longitude" :markers="covers">
+    <view class="uni-container map-container u-p-10">
+        <view class="detail-map">
+            <map style="width: 100%;height:100%;flex-shrink: 0;" :latitude="location.latitude" :scale="15"
+                :longitude="location.longitude" :markers="covers">
                 <cover-view slot="callout">
                     <cover-view marker-id="1">
-                        <view style="font-size:12px;width:50px;height:30px;">123</view>
+                        <view style="font-size:12px;width:50px;height:30px;"></view>
                     </cover-view>
                 </cover-view>
             </map>
         </view>
         <view class="device-info-box">
             <view class="device-info">
-                {{data.deviceName}}
+                {{data.deviceName||''}}
                 <text class="device-sbinfo">
-                    SN:{{data.deviceName}}
+                    SN:{{data.deviceName||''}}
                 </text>
             </view>
             <view class="device-channels">
@@ -60,11 +61,11 @@ export default {
                     latitude: this.data.lat,
                     longitude: this.data.lng,
                     iconPath: "/static/location.png",
-                    customCallout: {
-                        display: "ALWAYS",
-                        content: "12123123213\n12312312",
-                        fontSize: 12,
-                    },
+                    // customCallout: {
+                    //     display: "ALWAYS",
+                    //     content: "12123123213\n12312312",
+                    //     fontSize: 12,
+                    // },
                 },
             ];
         });
@@ -93,10 +94,17 @@ export default {
     right: 0px;
     bottom: 0px;
 }
+.detail-map {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 45%;
+}
 .detail-head {
     background-color: #0d3a63;
     color: #fff;
-    padding: 10upx 15upx;
+    padding: 10upx 25upx;
 }
 .detail-foot {
     padding: 10upx 15upx;
@@ -110,12 +118,17 @@ export default {
     }
 }
 .device-info-box {
-    height: 40%;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 45%;
+    bottom: 0px;
     overflow-y: auto;
 }
 .device-info {
     font-size: 32upx;
     font-weight: bold;
+    padding-left: 10upx;
     .device-sbinfo {
         display: inline-block;
         padding-left: 5px;
