@@ -6,8 +6,21 @@
                 <view class="mini-sn">sn：{{data.deviceSN}}</view>
             </view>
             <view class="uni-operate">
-                <view v-html="statusDom"></view>
-                <text :class="['sunseticon sunseticon-location',data.lat&&data.lng?'location-mark':'location-mark-disabled']" @click="showMap()"></text>
+                <view :class="['device-status-tip',deviceStatus]">{{deviceStatusText}}</view>
+                <view class="device-electricity-iconwrap" title="电量：${electricity}%">
+                    <view :class="['device-electricity-icon',electricityStatus]">
+                        <view v-if="electricityStatus=='empty'" class="empty"></view>
+                        <text v-for="i in electricityH" :key="i" class='text'></text>
+                    </view>
+                </view>
+                <view class="device-csq-wrap">
+                    <view title="信号：${csq}" :class="['device-csq-icon',csqStatus]">
+                        <text v-for="i in csqH" :key="i" class='text'></text>
+                    </view>
+                </view>
+                <view>
+                    <text :class="['sunseticon sunseticon-location',data.lat&&data.lng?'location-mark':'location-mark-disabled']" @click="showMap()"></text>
+                </view>
             </view>
         </view>
         <view :class="['unit-body']">
@@ -17,7 +30,7 @@
                 <text class="sunseticon sunseticon-chart" @click="showDetail(item)"></text>
             </view>
             <view v-show="data.deviceType==2" class="device-channel full">
-                <text class="att-label" v-for="(item,index) in data.$channels" :key="index"  @click="showDetail(item)">{{item.label}}:{{item.measure}}{{item.value}}{{item.unit}}</text>
+                <text class="att-label" v-for="(item,index) in data.$channels" :key="index" @click="showDetail(item)">{{item.label}}:{{item.measure}}{{item.value}}{{item.unit}}</text>
                 <text class="sunseticon sunseticon-warning" v-if="data.alarmcode&&data.alarmcode>0" @click="showAlarm(data)"></text>
                 <text class="sunseticon sunseticon-chart" @click="showDetail(data)"></text>
             </view>
@@ -26,10 +39,6 @@
                 <view class="fr">{{formatTime(data.addTime)}}</view>
             </view>
         </view>
-        <!-- <view class="unit-foot">
-            <u-button v-if="!overtime" type="primary" class="fr btn" size="mini" throttle-time="100" @click="showDetail()">查看详情</u-button>
-            <u-button v-if="!overtime" type="primary" class="fr btn" size="mini" throttle-time="100" @click="showMap()">地图</u-button>
-        </view> -->
         <u-toast ref="uToast" />
     </view>
 </template>
@@ -175,6 +184,78 @@ export default {
                 ${$business.generateCsqDom(this.data.csq)}
             `;
         },
+        electricityStatus() {
+            var electricity = this.data.powerpercent || 0;
+            var h = Math.floor((electricity / 100.0) * 5);
+            var status = "empty";
+            if (h >= 4) {
+                status = "color-success";
+            } else if (h >= 2) {
+                status = "color-warning";
+            } else if (h >= 1 || electricity > 0) {
+                status = "color-danger";
+            }
+            return status;
+        },
+        electricityH() {
+            var electricity = this.data.powerpercent || 0;
+            return Math.floor((electricity / 100.0) * 5);
+        },
+        csqStatus() {
+            var csq = this.data.csq || 0;
+            var status = "empty";
+            var h = 5;
+            if (csq >= 25) {
+                status = "color-success";
+                h = 5;
+            } else if (csq >= 16) {
+                status = "color-success";
+                h = 4;
+            } else if (csq >= 10) {
+                status = "color-warning";
+                h = 3;
+            } else if (csq >= 3) {
+                status = "color-warning";
+                h = 2;
+            } else if (csq > 0) {
+                status = "color-danger";
+                h = 1;
+            }
+            return status;
+        },
+        csqH() {
+            var csq = this.data.csq || 0;
+            var status = "empty";
+            var h = 5;
+            if (csq >= 25) {
+                status = "color-success";
+                h = 5;
+            } else if (csq >= 16) {
+                status = "color-success";
+                h = 4;
+            } else if (csq >= 10) {
+                status = "color-warning";
+                h = 3;
+            } else if (csq >= 3) {
+                status = "color-warning";
+                h = 2;
+            } else if (csq > 0) {
+                status = "color-danger";
+                h = 1;
+            }
+            return h;
+        },
+        deviceStatusText() {
+            return this.data.deviceStatusText;
+        },
+        deviceStatus() {
+            return (
+                {
+                    2: "color-success",
+                    4: "color-danger",
+                }[this.data.deviceStatus] || "color-warning"
+            );
+        },
     },
     created() {},
 };
@@ -273,6 +354,11 @@ export default {
             line-height: 60upx;
             margin: 14upx 0;
         }
+    }
+    .device-status-tip {
+        margin-right: 8px;
+        font-size: 18upx;
+        margin-bottom: -3px;
     }
 }
 </style>

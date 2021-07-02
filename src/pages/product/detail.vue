@@ -135,7 +135,7 @@ export default {
                                 if (index % step == 0) {
                                     return $util.Dates.format(
                                         item.addTime,
-                                        "yyyy-MM-dd"
+                                        "HH:mm:ss"
                                     );
                                 } else {
                                     return "";
@@ -147,7 +147,7 @@ export default {
                                     rawCategories: res.map((item, index) =>
                                         $util.Dates.format(
                                             item.addTime,
-                                            "yyyy-MM-dd HH:mm:ss"
+                                            "HH:mm:ss"
                                         )
                                     ),
                                     type: "line",
@@ -162,7 +162,7 @@ export default {
                                     rawCategories: res.map((item, index) =>
                                         $util.Dates.format(
                                             item.addTime,
-                                            "yyyy-MM-dd HH:mm:ss"
+                                            "HH:mm:ss"
                                         )
                                     ),
                                     type: "line",
@@ -175,7 +175,7 @@ export default {
                                     rawCategories: res.map((item, index) =>
                                         $util.Dates.format(
                                             item.addTime,
-                                            "yyyy-MM-dd HH:mm:ss"
+                                            "HH:mm:ss"
                                         )
                                     ),
                                     type: "line",
@@ -221,18 +221,42 @@ export default {
                                     addLine: true,
                                     gradient: true,
                                 },
+                                tooltip: {
+                                    showBox: true,
+                                    showArrow: true,
+                                    showCategory: true,
+                                },
                             },
                         };
                     } else {
-                        var step = Math.max(Math.ceil(res.length / 500), 1) * 8;
+                        var step =
+                            Math.max(Math.ceil(res.length / 500), 1) * 20;
                         this.chartType = "line";
                         this.chartStyle = "";
+                        var maxV = null;
+                        var minV = null;
+                        res.forEach((item) => {
+                            var v = +item.channelValue;
+                            if (maxV == null) {
+                                maxV = v;
+                            } else {
+                                maxV = Math.max(maxV, v);
+                            }
+                            if (minV == null) {
+                                minV = v;
+                            } else {
+                                minV = Math.min(minV, v);
+                            }
+                        });
+                        var top = maxV + maxV - minV;
+                        var bottom = minV - maxV + minV;
+
                         this.chartData = {
                             categories: res.map((item, index) => {
                                 if (index % step == 0) {
                                     return $util.Dates.format(
                                         item.addTime,
-                                        "yyyy-MM-dd HH:mm:ss"
+                                        "HH:mm:ss"
                                     );
                                 } else {
                                     return "";
@@ -244,7 +268,7 @@ export default {
                                     rawCategories: res.map((item, index) =>
                                         $util.Dates.format(
                                             item.addTime,
-                                            "yyyy-MM-dd HH:mm:ss"
+                                            "HH:mm:ss"
                                         )
                                     ),
                                     data: res.map((item) => +item.channelValue),
@@ -259,6 +283,8 @@ export default {
                                         position: "left",
                                         title: this.currentFilter.unit,
                                         tofix: 2,
+                                        min: isNaN(bottom) ? void 0 : bottom,
+                                        max: isNaN(top) ? void 0 : top,
                                     },
                                 ],
                             },
@@ -267,6 +293,11 @@ export default {
                                     type: "curve",
                                     addLine: true,
                                     gradient: true,
+                                },
+                                tooltip: {
+                                    showBox: true,
+                                    showArrow: true,
+                                    showCategory: true,
                                 },
                             },
                         };
@@ -342,7 +373,7 @@ export default {
     position: relative;
     .detail-chart-inner {
         height: 100%;
-        width: 15000px;
+        width: 3000px;
         &.w-500 {
             width: 1000px;
         }

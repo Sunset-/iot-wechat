@@ -209,9 +209,11 @@ img {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    transform: rotate(90deg);
+    margin-right:8px;
     & > .text {
         display: block;
-        width: 86%;
+        width: 80%;
         height: 2px;
         background: #777;
         margin: 1px;
@@ -281,7 +283,7 @@ img {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    height: 20px;
+    height: 18px;
     &.color-success {
         border-color: @color-success;
         & > .text {
