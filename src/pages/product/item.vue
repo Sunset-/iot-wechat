@@ -7,7 +7,7 @@
             </view>
             <view class="uni-operate">
                 <view :class="['device-status-tip',deviceStatus]">{{deviceStatusText}}</view>
-                <view class="device-electricity-iconwrap" title="电量：${electricity}%">
+                <view v-if="data.deviceStatus!=1" class="device-electricity-iconwrap" title="电量：${electricity}%">
                     <view :class="['device-electricity-icon',electricityStatus]">
                         <view v-if="electricityStatus=='empty'" class="empty"></view>
                         <text v-for="i in electricityH" :key="i" class='text'></text>
@@ -203,6 +203,9 @@ export default {
         },
         csqStatus() {
             var csq = this.data.csq || 0;
+            if (this.data.deviceStatus == 1) {
+                csq = 0;
+            }
             var status = "empty";
             var h = 5;
             if (csq >= 25) {
@@ -225,6 +228,9 @@ export default {
         },
         csqH() {
             var csq = this.data.csq || 0;
+            if (this.data.deviceStatus == 1) {
+                csq = 0;
+            }
             var status = "empty";
             var h = 5;
             if (csq >= 25) {
@@ -357,7 +363,7 @@ export default {
     }
     .device-status-tip {
         margin-right: 8px;
-        font-size: 18upx;
+        font-size: 22upx;
         margin-bottom: -3px;
     }
 }

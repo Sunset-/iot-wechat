@@ -210,7 +210,7 @@ img {
     flex-direction: column;
     justify-content: flex-end;
     transform: rotate(90deg);
-    margin-right:8px;
+    margin-right: 8px;
     & > .text {
         display: block;
         width: 80%;
@@ -280,6 +280,7 @@ img {
     vertical-align: bottom;
 }
 .device-csq-icon {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: flex-end;
@@ -325,6 +326,17 @@ img {
         }
         &.gray {
             background: #dadada;
+        }
+    }
+
+    &.empty {
+        &:before {
+            content: "x";
+            position: absolute;
+            top: -8px;
+            left: 0px;
+            font-size: 22upx;
+            color: #dadada;
         }
     }
 }
