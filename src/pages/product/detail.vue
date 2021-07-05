@@ -22,11 +22,14 @@
                 </label>
             </radio-group> -->
         </view>
-        <scroll-view class="scroll-view_H detail-chart" scroll-x="true" scroll-left="0">
+        <!-- <scroll-view class="scroll-view_H detail-chart" scroll-x="true" scroll-left="0">
             <view :class="['detail-chart-inner','w-'+chartStyle]">
                 <qiun-data-charts :animation="true" :type="chartType" :opts="chartOpts" :chartData="chartData" />
             </view>
-        </scroll-view>
+        </scroll-view> -->
+        <view :class="['detail-chart-inner','w-'+chartStyle]">
+            <qiun-data-charts :animation="true" :type="chartType" :opts="chartOpts" :chartData="chartData" :ontouch="true" :canvas2d="true" />
+        </view>
     </view>
 </template>
 
@@ -70,6 +73,7 @@ export default {
                         },
                     ],
                 },
+                enableScroll: true, //开启图表拖拽功能
                 extra: {
                     area: { type: "curve", addLine: true, gradient: true },
                 },
@@ -130,16 +134,57 @@ export default {
                         var step = Math.ceil(res.length / 3);
                         this.chartType = "mix";
                         this.chartStyle = "500";
+
+                        var maxT = null;
+                        var minT = null;
+                        var maxA = null;
+                        var minA = null;
+                        res.forEach((item) => {
+                            var t = +item.t;
+                            var a1 = +item.a1;
+                            var a2 = +item.a2;
+                            if (maxT == null) {
+                                maxT = t;
+                            } else {
+                                maxT = Math.max(maxT, t);
+                            }
+                            if (minT == null) {
+                                minT = t;
+                            } else {
+                                minT = Math.min(minT, t);
+                            }
+                            if (maxA == null) {
+                                maxA = a1;
+                            } else {
+                                maxA = Math.max(maxA, a1);
+                            }
+                            if (maxA == null) {
+                                maxA = a2;
+                            } else {
+                                maxA = Math.max(maxA, a2);
+                            }
+                            if (minA == null) {
+                                minA = a1;
+                            } else {
+                                minA = Math.min(minA, a1);
+                            }
+                            if (minA == null) {
+                                minA = a2;
+                            } else {
+                                minA = Math.min(minA, a2);
+                            }
+                        });
+                        var topT = maxT + maxT - minT;
+                        var bottomT = minT - maxT + minT;
+                        var topA = maxA + maxA - minA;
+                        var bottomA = minA - maxA + minA;
+
                         this.chartData = {
                             categories: res.map((item, index) => {
-                                if (index % step == 0) {
-                                    return $util.Dates.format(
-                                        item.addTime,
-                                        "HH:mm:ss"
-                                    );
-                                } else {
-                                    return "";
-                                }
+                                return $util.Dates.format(
+                                    item.addTime,
+                                    "HH:mm:ss"
+                                );
                             }),
                             series: [
                                 {
@@ -151,7 +196,9 @@ export default {
                                         )
                                     ),
                                     type: "line",
-                                    style: "curve",
+                                    dataPointShape: true,
+                                    dataPointShapeType: "solid",
+                                    // style: "curve",
                                     dataLabel: false,
                                     data: res.map((item) => item.t),
                                 },
@@ -166,7 +213,9 @@ export default {
                                         )
                                     ),
                                     type: "line",
-                                    style: "curve",
+                                    dataPointShape: true,
+                                    dataPointShapeType: "solid",
+                                    // style: "curve",
                                     data: res.map((item) => item.a1),
                                 },
                                 {
@@ -179,12 +228,25 @@ export default {
                                         )
                                     ),
                                     type: "line",
-                                    style: "curve",
+                                    dataPointShape: true,
+                                    dataPointShapeType: "solid",
+                                    // style: "curve",
                                     data: res.map((item) => item.a2),
                                 },
                             ],
                         };
                         this.chartOpts = {
+                            enableScroll: true, //开启图表拖拽功能
+                            xAxis: {
+                                type: "grid",
+                                gridType: "dash",
+                                labelCount: 4,
+                                itemCount: 25, //x轴单屏显示数据的数量，默认为5个
+                                scrollShow: true, //新增是否显示滚动条，默认false
+                                scrollAlign: "left", //滚动条初始位置
+                                scrollBackgroundColor: "#F7F7FF", //默认为 #EFEBEF
+                                scrollColor: "#DEE7F7", //默认为 #A6A6A6
+                            },
                             yAxis: {
                                 disableGrid: !res || res.length == 0,
                                 data: [
@@ -192,11 +254,15 @@ export default {
                                         position: "left",
                                         title: "温度℃",
                                         tofix: 1,
+                                        min: isNaN(bottomT) ? void 0 : bottomT,
+                                        max: isNaN(topT) ? void 0 : topT,
                                     },
                                     {
                                         position: "right",
                                         title: "电流mA",
                                         tofix: 2,
+                                        min: isNaN(bottomA) ? void 0 : bottomA,
+                                        max: isNaN(topA) ? void 0 : topA,
                                     },
                                 ],
                             },
@@ -230,7 +296,7 @@ export default {
                         };
                     } else {
                         var step =
-                            Math.max(Math.ceil(res.length / 500), 1) * 20;
+                            Math.max(Math.ceil(res.length / 500), 1) * 10;
                         this.chartType = "line";
                         this.chartStyle = "";
                         var maxV = null;
@@ -253,14 +319,10 @@ export default {
 
                         this.chartData = {
                             categories: res.map((item, index) => {
-                                if (index % step == 0) {
-                                    return $util.Dates.format(
-                                        item.addTime,
-                                        "HH:mm:ss"
-                                    );
-                                } else {
-                                    return "";
-                                }
+                                return $util.Dates.format(
+                                    item.addTime,
+                                    "HH:mm:ss"
+                                );
                             }),
                             series: [
                                 {
@@ -276,6 +338,17 @@ export default {
                             ],
                         };
                         this.chartOpts = {
+                            enableScroll: true, //开启图表拖拽功能
+                            xAxis: {
+                                type: "grid",
+                                gridType: "dash",
+                                labelCount: 4,
+                                itemCount: 25, //x轴单屏显示数据的数量，默认为5个
+                                scrollShow: true, //新增是否显示滚动条，默认false
+                                scrollAlign: "left", //滚动条初始位置
+                                scrollBackgroundColor: "#F7F7FF", //默认为 #EFEBEF
+                                scrollColor: "#DEE7F7", //默认为 #A6A6A6
+                            },
                             yAxis: {
                                 disableGrid: !res || res.length == 0,
                                 data: [
@@ -371,36 +444,12 @@ export default {
     height: 55%;
     overflow-x: scroll;
     position: relative;
-    .detail-chart-inner {
-        height: 100%;
-        width: 3000px;
-        &.w-500 {
-            width: 1000px;
-        }
-        // &.w-1000 {
-        //     width: 8000px;
-        // }
-        // &.w-2000 {
-        //     width: 16000px;
-        // }
-        // &.w-3000 {
-        //     width: 24000px;
-        // }
-        // &.w-4000 {
-        //     width: 32000px;
-        // }
-        // &.w-5000 {
-        //     width: 40000px;
-        // }
-        // &.w-6000 {
-        //     width: 48000px;
-        // }
-        // &.w-7000 {
-        //     width: 56000px;
-        // }
-        // &.w-8000 {
-        //     width: 64000px;
-        // }
+}
+.detail-chart-inner {
+    height: 350px;
+    width: 100%;
+    &.w-500 {
+        width: 100%;
     }
 }
 </style>
