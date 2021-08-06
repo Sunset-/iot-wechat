@@ -3,10 +3,12 @@
         <view class="home-online-chart">
             <view class="screen-pie-chart">
                 <!-- <qiun-data-charts type="arcbar" :animation="false" :opts="{title:{name:(chartOptionsLeft2.deviceCount==0?0:(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)).toFixed(0)+'%',color:'#0a73ff',fontSize:25},subtitle:{name:'在线率',color:'#0a73ff',fontSize:15}}" :chartData="chartsDataArcbar1" /> -->
-                <view :class="['loading','progress-'+(chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount))]">
+                <view
+                    :class="['loading','progress-'+(chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount))]">
                     <view class="left"></view>
                     <view class="right"></view>
-                    <view class="progress"><span class="loading-text">{{chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)}}%</span>
+                    <view class="progress"><span
+                            class="loading-text">{{chartOptionsLeft2.deviceCount==0?0:Math.round(chartOptionsLeft2.onlineDeviceCount*100.0/chartOptionsLeft2.deviceCount)}}%</span>
                     </view>
                 </view>
             </view>
@@ -28,16 +30,18 @@
         <view class="home-line-chart ">
             <view class="panel-title" sub="单位：台">日活设备</view>
             <view class="panel-chart">
-                <qiun-data-charts class="panel-chart-inner" type="area" tooltipFormat="manyDate" :animation="true" startDate="2021-03-08" endDate="2021-05-13" :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
+                <qiun-data-charts class="panel-chart-inner" type="area" tooltipFormat="manyDate" :animation="true"
+                    startDate="2021-03-08" endDate="2021-05-13"
+                    :opts="{extra:{area:{type:'curve',addLine:true,gradient:true}}}" :chartData="chartData2" />
             </view>
         </view>
         <view>
             <view class="login-button" v-if="loaded&&logined">
                 <u-button type="success" @click="subscribeAlarm">查看详情</u-button>
             </view>
-            <view class="login-button" v-if="loaded&&!logined">
+            <!-- <view class="login-button" v-if="loaded&&!logined">
                 <u-button type="success" open-type="getUserInfo" @getuserinfo="login(e)">点击授权登录</u-button>
-            </view>
+            </view> -->
         </view>
         <u-toast ref="uToast" />
     </view>
@@ -78,7 +82,7 @@ export default {
     onShow() {
         this.init();
         $auth
-            .loginByOpenId()
+            .login()
             .then((res) => {
                 this.loaded = true;
                 if (res.id) {
@@ -91,6 +95,9 @@ export default {
             })
             .catch((e) => {
                 this.loaded = true;
+                uni.redirectTo({
+                    url: "/pages/guest/index",
+                });
             });
     },
     mounted() {

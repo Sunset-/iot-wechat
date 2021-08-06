@@ -121,6 +121,7 @@ export default {
                         deviceSN: this.keyword,
                         pageSize: 10,
                         pageIndex: Math.floor(this.listData.length / 10) + 1,
+                        userId : user.userId
                     })
                         .then((res) => {
                             console.log("请求接口结果：", res.list);

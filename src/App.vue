@@ -9,7 +9,18 @@ export default {
         uni.showToast({
             title: query.scene,
         });
-        $auth.getCurrentUser();
+
+        $auth
+            .login()
+            .then((res) => {
+                console.log("自动登录成功");
+            })
+            .catch((e) => {
+                console.log("自动登录失败");
+                uni.redirectTo({
+                    url: "/pages/guest/index",
+                });
+            });
     },
     onHide: function () {
         console.log("App Hide");

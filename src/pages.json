@@ -11,6 +11,13 @@
 			}
 		},
 		{
+			"path": "pages/guest/index",
+			"style": {
+				"navigationBarTitleText": "设备物联网平台",
+				"navigationBarBackgroundColor" : "#0a73ff"
+			}
+		},
+		{
 			"path": "pages/product/index",
 			"style": {
 				"navigationBarTitleText": "设备物联网平台",
